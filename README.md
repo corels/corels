@@ -21,6 +21,7 @@ CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 * [Example rule list](#example-rule-list)
 * [Optimization algorithm and objective](#optimization-algorithm-and-objective)
 * [Data structures](#data-structures)
+* [Related work](#related-work)
 
 ### C/C++ dependencies
 
@@ -184,3 +185,17 @@ where `misc(p, x, y)` is the prefix misclassification error
 * A **trie** (prefix tree) functions as a cache and supports incremental computation.
 * A **priority queue** supports multiple best-first search policies, as well as both breadth-first and depth-first search.
 * A **map** supports symmetry-aware pruning.
+
+### Related work
+
+CORELS builds directly on:
+
+* Hongyu Yang, Cynthia Rudin, and Margo Seltzer.
+**Scalable Bayesian Rule Lists**. [arXiv:1602.08610](https://arxiv.org/abs/1602.08610), 2016. [code](https://github.com/Hongyuy/sbrlmod)
+
+* Benjamin Letham, Cynthia Rudin, Tyler McCormick and David Madigan.
+**Interpretable Classifiers Using Rules and Bayesian Analysis: Building a Better Stroke Prediction Model**.
+*The Annals of Applied Statistics*, 2015, Vol. 9, No. 3, 1350–1371. [pdf](https://users.cs.duke.edu/~cynthia/docs/LethamRuMcMa15.pdf) [code](https://users.cs.duke.edu/~cynthia/code/BRL_supplement_code.zip)
+
+In particular, CORELS uses a library by Yang et al. for efficiently representing and operating on bit vectors.
+See the files [src/rule.h](src/rule.h) and [src/rule.c](src/rule.c).
