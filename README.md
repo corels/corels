@@ -1,14 +1,23 @@
 # CORELS
 Certifiably Optimal RulE ListS
 
+CORELS is a custom discrete optimization
+technique for building rule lists over a categorical feature space.
+Our algorithm provides the optimal solution, with a certificate of optimality.
+By leveraging algorithmic bounds, efficient data structures,
+and computational reuse, we achieve several orders of magnitude speedup in time
+and a massive reduction of memory consumption.
+Our approach produces optimal rule lists on practical
+problems in seconds.
+This framework is a novel alternative to CART and other decision tree methods.
+
+
 * Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Margo Seltzer, and Cynthia Rudin.
 **Learning Certifiably Optimal Rule Lists for Categorical Data**.
 [arXiv:1704.01701](https://arxiv.org/abs/1704.01701), 2017.
 
 * Nicholas Larus-Stone. **Learning Certifiably Optimal Rule Lists: A Case For Discrete Optimization in the 21st Century**.
 Senior thesis, 2017.
-
-CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 
 ## Overview
 
