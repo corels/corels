@@ -1,8 +1,8 @@
 # CORELS
 Certifiably Optimal RulE ListS
 
-CORELS is a custom discrete optimization
-technique for building rule lists over a categorical feature space.
+**CORELS is a custom discrete optimization
+technique for building rule lists over a categorical feature space.**
 Our algorithm provides the optimal solution, with a certificate of optimality.
 By leveraging algorithmic bounds, efficient data structures,
 and computational reuse, we achieve several orders of magnitude speedup in time
