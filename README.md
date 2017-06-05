@@ -1,14 +1,23 @@
 # CORELS
 Certifiably Optimal RulE ListS
 
+**CORELS is a custom discrete optimization
+technique for building rule lists over a categorical feature space.**
+Our algorithm provides the optimal solution, with a certificate of optimality.
+By leveraging algorithmic bounds, efficient data structures,
+and computational reuse, we achieve several orders of magnitude speedup in time
+and a massive reduction of memory consumption.
+Our approach produces optimal rule lists on practical
+problems in seconds.
+This framework is a novel alternative to CART and other decision tree methods.
+
+
 * Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Margo Seltzer, and Cynthia Rudin.
 **Learning Certifiably Optimal Rule Lists for Categorical Data**.
 [arXiv:1704.01701](https://arxiv.org/abs/1704.01701), 2017.
 
 * Nicholas Larus-Stone. **Learning Certifiably Optimal Rule Lists: A Case For Discrete Optimization in the 21st Century**.
 Senior thesis, 2017.
-
-CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 
 ## Overview
 
@@ -21,6 +30,7 @@ CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 * [Example rule list](#example-rule-list)
 * [Optimization algorithm and objective](#optimization-algorithm-and-objective)
 * [Data structures](#data-structures)
+* [Related work](#related-work)
 
 ### C/C++ dependencies
 
@@ -184,3 +194,17 @@ where `misc(p, x, y)` is the prefix misclassification error
 * A **trie** (prefix tree) functions as a cache and supports incremental computation.
 * A **priority queue** supports multiple best-first search policies, as well as both breadth-first and depth-first search.
 * A **map** supports symmetry-aware pruning.
+
+### Related work
+
+CORELS builds directly on:
+
+* Hongyu Yang, Cynthia Rudin, and Margo Seltzer.
+**Scalable Bayesian Rule Lists**. [arXiv:1602.08610](https://arxiv.org/abs/1602.08610), 2016. [code](https://github.com/Hongyuy/sbrlmod)
+
+* Benjamin Letham, Cynthia Rudin, Tyler McCormick and David Madigan.
+**Interpretable Classifiers Using Rules and Bayesian Analysis: Building a Better Stroke Prediction Model**.
+*The Annals of Applied Statistics*, 2015, Vol. 9, No. 3, 1350–1371. [pdf](https://users.cs.duke.edu/~cynthia/docs/LethamRuMcMa15.pdf) [code](https://users.cs.duke.edu/~cynthia/code/BRL_supplement_code.zip)
+
+In particular, CORELS uses a library by Yang et al. for efficiently representing and operating on bit vectors.
+See the files [src/rule.h](src/rule.h) and [src/rule.c](src/rule.c).
