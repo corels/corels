@@ -151,13 +151,18 @@ void CacheTree::gc_helper(Node* node) {
     if (!node->done())
         logger->addQueueElement(node->depth(), node->lower_bound(), false);
     Node* child;
+    double lb;
     std::vector<Node*> children;
     for (typename std::map<unsigned short, Node*>::iterator cit = node->children_.begin(); 
             cit != node->children_.end(); ++cit)
         children.push_back(cit->second);
     for (typename std::vector<Node*>::iterator cit = children.begin(); cit != children.end(); ++cit) {
         child = *cit;
-        if ((child->lower_bound() + c_) >= min_objective_) {
+        if (tree->ablation() != 2)
+            lb = child->lower_bound() + c_;
+        else
+            lb = child->lower_bound();
+        if (lb >= min_objective_) {
             node->delete_child(child->id());
             delete_subtree(this, child, false, false);
         } else
