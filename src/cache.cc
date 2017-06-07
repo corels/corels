@@ -158,7 +158,7 @@ void CacheTree::gc_helper(Node* node) {
         children.push_back(cit->second);
     for (typename std::vector<Node*>::iterator cit = children.begin(); cit != children.end(); ++cit) {
         child = *cit;
-        if (tree->ablation() != 2)
+        if (ablation_ != 2)
             lb = child->lower_bound() + c_;
         else
             lb = child->lower_bound();
