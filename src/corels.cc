@@ -124,7 +124,7 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
                 double t5 = timestamp();
                 q->push(n);
                 logger->setQueueSize(q->size());
-                logger->addQueueElement(len_prefix, lower_bound, false);
+                //logger->addQueueElement(len_prefix, lower_bound, false);
                 logger->addToQueueInsertionTime(time_diff(t5));
             }
         } // else:  objective lower bound with one-step lookahead
@@ -139,7 +139,7 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
     logger->addToRuleEvalTime(time_diff(t0));
     logger->incRuleEvalNum();
     logger->decPrefixLen(parent->depth());
-    logger->removeQueueElement(len_prefix - 1, parent_lower_bound, false);
+    //logger->removeQueueElement(len_prefix - 1, parent_lower_bound, false);
     if (parent->num_children() == 0) {
         tree->prune_up(parent);
     } else {
