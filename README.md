@@ -56,12 +56,13 @@ Run the following from the `src/` directory.
 
 ### Data format
 
-For examples, see `compas.out` and `compas.label` in `data/`.  Also see `compas.minor` (optional). 
+For examples, see `compas.out` and `compas.label` in `data/`.  Also see `compas.minor` (optional). Note that our data parsing is fragile and errors will occur if the format is not followed exactly.
 
 * The input data files must be space-delimited text.
 * Each line contains `N + 1` fields, where `N` is the number of observations, and ends with `\n` (including the last line).
 * In each line, the last `N` fields are `0`'s and `1`'s, and encode a bit vector;
 the first field has the format `{text-description}`, where the text between the brackets provides a description of the bit vector.
+* There can be no spaces in the text descriptions--words should be separated by dashes or underscores.
 
 ### Arguments
 
