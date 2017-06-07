@@ -148,6 +148,8 @@ Node* CacheTree::check_prefix(tracking_vector<unsigned short, DataStruct::Tree>&
  * than the minimum objective.
  */
 void CacheTree::gc_helper(Node* node) {
+    if (!node->done())
+        logger->addQueueElement(node->depth(), node->lower_bound(), false);
     Node* child;
     std::vector<Node*> children;
     for (typename std::map<unsigned short, Node*>::iterator cit = node->children_.begin(); 
@@ -198,7 +200,7 @@ void delete_subtree(CacheTree* tree, Node* node, bool destructive,
         } else {
             logger->decPrefixLen(node->depth());
             if (update_remaining_state_space)
-                logger->removeQueueElement(node->depth(), node->lower_bound(), true);
+                logger->removeQueueElement(node->depth(), node->lower_bound(), false);
             node->set_deleted();
         }
     }
