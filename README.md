@@ -52,7 +52,7 @@ Run the following from the `src/` directory.
 ### Usage
 
     ./corels [-b] [-n max_num_nodes] [-r regularization] [-v verbosity] -c (1|2|3|4) -p (0|1|2)
-             [-f logging_frequency] -a (1|2|3) [-L latex_out] data.out data.label [data.minor]
+             [-f logging_frequency] -a (1|2|3) [-s] [-L latex_out] data.out data.label [data.minor]
 
 ### Data format
 
@@ -105,6 +105,12 @@ Default value corresponds to `-a 0`.
 * Use `-a 0` to include the following optimizations.
 * Use `-a 1` to exclude the minimum support bounds (see *Section 3.7 Lower bounds on antecedent support* of our paper).
 * Use `-a 2` to exclude the lookahead bound (see *Lemma 2 in Section 3.4 Hierarchical objective lower bound*).
+
+**-s** Calculate an upper bound on the size of the remaining search space (optional).
+This adds a small overhead; the default behavior does not perform the calculation.
+With `-s`, we dynamically and incrementally calculate `floor(log10(Gamma(Rc, Q)))`,
+where `Gamma(Rc, Q)` is an upper bound on the size of the remaining search space
+(see *Theorem 7 in Section 3.6* of our paper).
 
 **[-L latex_out]** Latex output.  Include this flag to generate a latex representation of the output rule list.
 

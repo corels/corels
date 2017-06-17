@@ -82,7 +82,7 @@ class NullLogger {
      * Initializes the logger by setting all fields to 0.
      * This allwos us to write a log record immediately.
      */
-    void initializeState() {
+    void initializeState(bool calculate_size) {
         _state.total_time = 0.;
         _state.evaluate_children_time = 0.;
         _state.evaluate_children_num = 0;
@@ -113,7 +113,8 @@ class NullLogger {
         _state.pmap_null_num = 0;
         _state.pmap_discard_num = 0;
         mpz_init(_state.remaining_space_size);
-        initRemainingSpaceSize();
+        if (calculate_size)
+            initRemainingSpaceSize();
     }
 
 

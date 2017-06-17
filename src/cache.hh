@@ -82,7 +82,8 @@ class CacheTree {
   public:
     CacheTree() {};
     CacheTree(size_t nsamples, size_t nrules, double c, rule_t *rules,
-              rule_t *labels, rule_t *minority, int ablation, char* type);
+              rule_t *labels, rule_t *minority, int ablation,
+              bool calculate_size, char* type);
     ~CacheTree();
 
     Node* construct_node(unsigned short new_rule, size_t nrules,
@@ -115,6 +116,7 @@ class CacheTree {
     inline void increment_num_evaluated();
     inline void decrement_num_nodes();
     inline int ablation() const;
+    inline bool calculate_size() const;
 
     void insert_root();
     void insert(Node* node);
@@ -132,6 +134,7 @@ class CacheTree {
     size_t num_nodes_;
     size_t num_evaluated_;
     int ablation_; // Used to remove support (1) or lookahead (2) bounds
+    bool calculate_size_;
 
     double min_objective_;
     tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist_;
@@ -299,6 +302,10 @@ inline Node* CacheTree::root() const {
 
 inline int CacheTree::ablation() const {
     return ablation_;
+}
+
+inline bool CacheTree::calculate_size() const {
+    return calculate_size_;
 }
 
 /*
