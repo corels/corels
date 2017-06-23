@@ -22,10 +22,12 @@ Node::Node(unsigned short id, size_t nrules, bool prediction,
 }
 
 CacheTree::CacheTree(size_t nsamples, size_t nrules, double c, rule_t *rules,
-                        rule_t *labels, rule_t *minority, int ablation, char* type)
+                        rule_t *labels, rule_t *minority, int ablation,
+                        bool calculate_size, char* type)
     : root_(0), nsamples_(nsamples), nrules_(nrules), c_(c),
       num_nodes_(0), num_evaluated_(0), min_objective_(0.5),
-      opt_rulelist_({}), opt_predictions_({}), ablation_(ablation), type_(type) {
+      opt_rulelist_({}), opt_predictions_({}), ablation_(ablation),
+      calculate_size_(calculate_size), type_(type) {
     opt_rulelist_.resize(0);
     opt_predictions_.resize(0);
     size_t i;
@@ -148,16 +150,23 @@ Node* CacheTree::check_prefix(tracking_vector<unsigned short, DataStruct::Tree>&
  * than the minimum objective.
  */
 void CacheTree::gc_helper(Node* node) {
+    if (calculate_size_ & (!node->done()))
+        logger->addQueueElement(node->depth(), node->lower_bound(), false);
     Node* child;
+    double lb;
     std::vector<Node*> children;
     for (typename std::map<unsigned short, Node*>::iterator cit = node->children_.begin(); 
             cit != node->children_.end(); ++cit)
         children.push_back(cit->second);
     for (typename std::vector<Node*>::iterator cit = children.begin(); cit != children.end(); ++cit) {
         child = *cit;
-        if ((child->lower_bound() + c_) >= min_objective_) {
+        if (ablation_ != 2)
+            lb = child->lower_bound() + c_;
+        else
+            lb = child->lower_bound();
+        if (lb >= min_objective_) {
             node->delete_child(child->id());
-            delete_subtree(this, child, false, false);
+            delete_subtree(this, child, false, calculate_size());
         } else
             gc_helper(child);
     }
@@ -167,7 +176,8 @@ void CacheTree::gc_helper(Node* node) {
  * Public wrapper function to garbage collect the entire tree beginning from the root.
  */
 void CacheTree::garbage_collect() {
-    logger->clearRemainingSpaceSize();
+    if (calculate_size_)
+        logger->clearRemainingSpaceSize();
     gc_helper(root_);
 }
 
@@ -175,7 +185,8 @@ void CacheTree::garbage_collect() {
  * Deletes a subtree of tree by recursively calling itself on node's children.
  * node -- the node at the root of the subtree to be deleted.
  * destructive -- booelan flag indicating whether to delete node or just lazily mark it.
- * update_remaining_state_space -- affects whether we remove the deleted elements from the queue.
+ * update_remaining_state_space -- boolean flag indicating whether to update the size of
+ * the remaining search space (optional calculation in logger state)
  */
 void delete_subtree(CacheTree* tree, Node* node, bool destructive, 
         bool update_remaining_state_space) {
@@ -198,7 +209,7 @@ void delete_subtree(CacheTree* tree, Node* node, bool destructive,
         } else {
             logger->decPrefixLen(node->depth());
             if (update_remaining_state_space)
-                logger->removeQueueElement(node->depth(), node->lower_bound(), true);
+                logger->removeQueueElement(node->depth(), node->lower_bound(), false);
             node->set_deleted();
         }
     }

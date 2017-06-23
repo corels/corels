@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     const char usage[] = "USAGE: %s [-b] "
         "[-n max_num_nodes] [-r regularization] [-v verbosity] "
         "-c (1|2|3|4) -p (0|1|2) [-f logging_frequency]"
-        "-a (0|1|2) [-L latex_out]"
+        "-a (0|1|2) [-s] [-L latex_out]"
         "data.out data.label\n\n"
         "%s\n";
 
@@ -36,11 +36,15 @@ int main(int argc, char *argv[]) {
     char error_txt[BUFSZ];
     int freq = 1000;
     int ablation = 0;
+    bool calculate_size = false;
     /* only parsing happens here */
-    while ((ch = getopt(argc, argv, "bLc:p:v:n:r:f:a:")) != -1) {
+    while ((ch = getopt(argc, argv, "bsLc:p:v:n:r:f:a:")) != -1) {
         switch (ch) {
         case 'b':
             run_bfs = true;
+            break;
+        case 's':
+            calculate_size = true;
             break;
         case 'c':
             run_curiosity = true;
@@ -196,7 +200,7 @@ int main(int argc, char *argv[]) {
         p = (PermutationMap*) null_pmap;
     }
 
-    CacheTree* tree = new CacheTree(nsamples, nrules, c, rules, labels, meta, ablation, type);
+    CacheTree* tree = new CacheTree(nsamples, nrules, c, rules, labels, meta, ablation, calculate_size, type);
     printf("%s", run_type);
     // runs our algorithm
     bbound(tree, max_num_nodes, q, p);

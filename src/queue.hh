@@ -64,14 +64,19 @@ class Queue {
             tracking_vector<unsigned short, DataStruct::Tree> prefix;
             Node *selected_node, *node;
             bool valid = true;
-            do { 
+            double lb;
+            do {
                 selected_node = q_->top();
                 q_->pop();
-                logger->setCurrentLowerBound(selected_node->lower_bound() + tree->c());
+                if (tree->ablation() != 2)
+                    lb = selected_node->lower_bound() + tree->c();
+                else
+                    lb = selected_node->lower_bound();
+                logger->setCurrentLowerBound(lb);
 
                 node = selected_node;
                 // delete leaf nodes that were lazily marked
-                if (node->deleted() || (node->lower_bound() + tree->c()) >= tree->min_objective()) {
+                if (node->deleted() || (lb >= tree->min_objective())) {
                     tree->decrement_num_nodes();
                     logger->removeFromMemory(sizeof(*node), DataStruct::Tree);
                     delete node;

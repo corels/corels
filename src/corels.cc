@@ -64,9 +64,13 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
         lower_bound = parent_lower_bound - parent_equivalent_minority + (float)(num_captured - captured_correct) / nsamples + c;
         logger->addToLowerBoundTime(time_diff(t1));
         logger->incLowerBoundNum();
-        // hierarchical objective lower bound
-        if (lower_bound >= tree->min_objective())
-            continue;
+	if (tree->ablation() != 2) {
+            if ((lower_bound + c) >= tree->min_objective()) // hierarchical objective lower bound with lookahead bound
+                continue;
+        } else {
+            if (lower_bound >= tree->min_objective()) // hierarchical objective lower bound
+	        continue;
+	}
         double t2 = timestamp();
         rule_vandnot(not_captured, parent_not_captured, captured, nsamples, &num_not_captured);
         rule_vand(not_captured_zeros, not_captured, tree->label(0).truthtable, nsamples, &d0);
@@ -120,7 +124,8 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
                 double t5 = timestamp();
                 q->push(n);
                 logger->setQueueSize(q->size());
-                //logger->addQueueElement(len_prefix, lower_bound, true);
+                if (tree->calculate_size())
+                    logger->addQueueElement(len_prefix, lower_bound, false);
                 logger->addToQueueInsertionTime(time_diff(t5));
             }
         } // else:  objective lower bound with one-step lookahead
@@ -135,7 +140,8 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
     logger->addToRuleEvalTime(time_diff(t0));
     logger->incRuleEvalNum();
     logger->decPrefixLen(parent->depth());
-    //logger->removeQueueElement(len_prefix - 1, parent_lower_bound, true);
+    if (tree->calculate_size())
+        logger->removeQueueElement(len_prefix - 1, parent_lower_bound, false);
     if (parent->num_children() == 0) {
         tree->prune_up(parent);
     } else {
@@ -161,7 +167,7 @@ int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p) {
 
     double start = timestamp();
     logger->setInitialTime(start);
-    logger->initializeState();
+    logger->initializeState(tree->calculate_size());
     int verbosity = logger->getVerbosity();
     // initial log record
     logger->dumpState();         
@@ -173,8 +179,7 @@ int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p) {
     logger->setQueueSize(q->size());
     logger->incPrefixLen(0);
     // log record for empty rule list
-    logger->dumpState(); 
-    logger->initRemainingSpaceSize();
+    logger->dumpState();
     while ((tree->num_nodes() < max_num_nodes) && !q->empty()) {
         double t0 = timestamp();
         std::pair<Node*, tracking_vector<unsigned short, DataStruct::Tree> > node_ordered = q->select(tree, captured);

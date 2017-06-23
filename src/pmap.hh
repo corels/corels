@@ -4,6 +4,7 @@
 #include "alloc.hh"
 #include <unordered_map>
 #include <algorithm>
+#include <functional>
 #include <set>
 /*
  * Represent prefix canonical order using an array of shorts.

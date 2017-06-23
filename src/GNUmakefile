@@ -1,6 +1,6 @@
-CFLAGS := -g -W -Wall -Wno-unused-parameter -I. -DGMP #-O$(O)
+CFLAGS := -g -W -Wall -Wno-unused-parameter -I. -DGMP -O$(O)
 
-LIBS += -L/usr/local/lib -lgmpxx -lgmp
+LIBS := -L/usr/local/lib -lgmpxx -lgmp
 
 CC = gcc
 CXX = g++ -std=c++11
