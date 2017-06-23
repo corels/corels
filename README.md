@@ -47,7 +47,7 @@ e.g., [install libmpc](http://brewformulas.org/Libmpc) via [homewbrew](https://b
 Run the following from the `src/` directory.
 
     make
-    ./corels -r 0.015 -c 2 -p 1 ../data/compas-train.out ../data/compas-train.label ../data/compas-train.minor
+    ./corels -r 0.015 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
 
 ### Usage
 
