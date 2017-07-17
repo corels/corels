@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
             pch ? pch + 1 : "",
             run_bfs ? "bfs" : "",
             run_curiosity ? curiosity_map[curiosity_policy].c_str() : "",
-            use_prefix_perm_map ? "with_prefix_perm_map" : 
+            use_prefix_perm_map ? "with_prefix_perm_map" :
                 (use_captured_sym_map ? "with_captured_symmetry_map" : "no_pmap"),
             meta ? "minor" : "no_minor",
             ablation ? ((ablation == 1) ? "support" : "lookahead") : "none",
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
     double init = timestamp();
     char run_type[BUFSZ];
     Queue* q;
-    char* type = "node";
+    const char* type = "node";
     if (curiosity_policy == 1) {
         strcat(run_type, "CURIOUS");
         q = new Queue(curious_cmp, run_type);

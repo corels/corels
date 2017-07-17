@@ -23,13 +23,13 @@ class NullLogger {
 
     virtual void setLogFileName(char *fname) {}
     virtual void dumpState() {}
-    virtual std::string dumpPrefixLens() {}
-    virtual std::string dumpRemainingSpaceSize() {}
+    virtual std::string dumpPrefixLens() { return ""; }
+    virtual std::string dumpRemainingSpaceSize() { return ""; }
 
     virtual inline void setVerbosity(int verbosity) {}
     virtual inline int getVerbosity() { return 0; }
     virtual inline void setFrequency(int frequency) {}
-    virtual inline int getFrequency() {}
+    virtual inline int getFrequency() { return 0; }
     virtual inline void addToLowerBoundTime(double t) {}
     virtual inline void incLowerBoundNum() {}
     virtual inline void addToObjTime(double t) {}
@@ -43,7 +43,7 @@ class NullLogger {
     virtual inline void addToEvalChildrenTime(double t) {}
     virtual inline void incEvalChildrenNum() {}
     virtual inline void setInitialTime(double t) {}
-    virtual inline double getInitialTime() {}
+    virtual inline double getInitialTime() { return 0.0; }
     virtual inline void setTotalTime(double t) {}
     virtual inline void addToPermMapInsertionTime(double t) {}
     virtual inline void incPermMapInsertionNum() {}
@@ -52,23 +52,23 @@ class NullLogger {
     virtual inline void setTreePrefixLen(size_t n) {}
     virtual inline void setTreeNumNodes(size_t n) {}
     virtual inline void setTreeNumEvaluated(size_t n) {}
-    virtual inline size_t getTreeMemory() {}
+    virtual inline size_t getTreeMemory() { return 0; }
     virtual inline void addToQueueInsertionTime(double t) {}
     virtual inline void setQueueSize(size_t n) {}
-    virtual inline size_t getQueueMemory() {}
+    virtual inline size_t getQueueMemory() { return 0; }
     virtual inline void setNRules(size_t nrules) {}
     virtual inline void setC(double c) {}
     virtual inline void initPrefixVec() {}
     virtual inline void incPrefixLen(size_t n) {}
     virtual inline void decPrefixLen(size_t n) {}
-    virtual inline size_t sumPrefixLens() {}
+    virtual inline size_t sumPrefixLens() { return 0; }
     virtual inline void updateQueueMinLen() {}
-    virtual inline size_t getQueueMinLen() {}
+    virtual inline size_t getQueueMinLen() { return 0; }
     virtual inline void incPmapSize() {}
     virtual inline void decreasePmapSize(size_t n) {}
     virtual inline void incPmapNullNum() {}
     virtual inline void incPmapDiscardNum() {}
-    virtual inline size_t getPmapMemory() {}
+    virtual inline size_t getPmapMemory() { return 0; }
     virtual inline void addToMemory(size_t n, DataStruct s) {}
     virtual inline void removeFromMemory(size_t n, DataStruct s) {}
     virtual inline void subtreeSize(mpz_t tot, unsigned int len_prefix, double lower_bound) {}
@@ -77,7 +77,7 @@ class NullLogger {
     virtual inline void removeQueueElement(unsigned int len_prefix, double lower_bound, bool approx) {}
     virtual inline void initRemainingSpaceSize() {}
     virtual inline void clearRemainingSpaceSize() {}
-    virtual inline size_t getLogRemainingSpaceSize() {}
+    virtual inline size_t getLogRemainingSpaceSize() { return 0; }
     /*
      * Initializes the logger by setting all fields to 0.
      * This allwos us to write a log record immediately.
@@ -165,9 +165,9 @@ class Logger : public NullLogger {
   public:
     void closeFile() override { if (_f.is_open()) _f.close(); }
     Logger(double c, size_t nrules, int verbosity, char* log_fname, int freq);
-    ~Logger() { 
+    ~Logger() {
         free(_state.prefix_lens);
-        closeFile(); 
+        closeFile();
     }
 
     void setLogFileName(char *fname) override;
@@ -290,7 +290,7 @@ class Logger : public NullLogger {
     }
     inline void updateQueueMinLen() override {
         // Note: min length is logically undefined when queue size is 0
-        size_t min_length = 0; 
+        size_t min_length = 0;
         for(size_t i = 0; i < _nrules; ++i) {
             if (_state.prefix_lens[i] > 0) {
                 min_length = i;
@@ -340,7 +340,7 @@ class Logger : public NullLogger {
         if (f_naive < f)
             f = f_naive;
         mpz_set_ui(tot, _nrules - len_prefix);
-        for (unsigned int k = (_nrules - len_prefix - 1); 
+        for (unsigned int k = (_nrules - len_prefix - 1);
                 k >= (_nrules - len_prefix - f + 1); k--) {
             mpz_addmul_ui(tot, tot, k);
         }
@@ -392,7 +392,7 @@ class Logger : public NullLogger {
     }
     inline size_t getLogRemainingSpaceSize() override {
         // This is approximate.
-        return mpz_sizeinbase(_state.remaining_space_size, 10); 
+        return mpz_sizeinbase(_state.remaining_space_size, 10);
     }
 };
 
@@ -409,7 +409,7 @@ inline double time_diff(double t0) {
 }
 
 #include "alloc.hh"
-/* 
+/*
  * Prints the final rulelist that CORELS returns.
  * rulelist -- rule ids of optimal rulelist
  * preds -- corresponding predictions of rules (+ default prediction)

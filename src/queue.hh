@@ -7,7 +7,7 @@
 #include <set>
 
 // pass custom allocator function to track memory allocations in the queue
-typedef std::priority_queue<Node*, tracking_vector<Node*, DataStruct::Queue>, 
+typedef std::priority_queue<Node*, tracking_vector<Node*, DataStruct::Queue>,
         std::function<bool(Node*, Node*)> > q;
 
 // orders based on depth (BFS)
@@ -37,7 +37,7 @@ static std::function<bool(Node*, Node*)> dfs_cmp = [](Node* left, Node* right) {
 
 class Queue {
     public:
-        Queue(std::function<bool(Node*, Node*)> cmp, char* type); 
+        Queue(std::function<bool(Node*, Node*)> cmp, const char* type);
         // by default, initialize this as a BFS queue
         Queue() : Queue(base_cmp, "BFS") {};
         Node* front() {
@@ -55,7 +55,7 @@ class Queue {
         bool empty() {
             return q_->empty();
         }
-        inline char* type() {
+        inline const char* type() const {
             return type_;
         }
 
@@ -84,7 +84,7 @@ class Queue {
                 } else {
                     valid = true;
                 }
-            } while (!q_->empty() && !valid); 
+            } while (!q_->empty() && !valid);
             if (!valid) {
                 return std::make_pair((Node*)NULL, prefix);
             }
@@ -102,7 +102,7 @@ class Queue {
 
     private:
         q* q_;
-        char* type_;
+        const char* type_;
 };
 
 extern int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p);
