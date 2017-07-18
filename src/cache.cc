@@ -25,8 +25,9 @@ CacheTree::CacheTree(size_t nsamples, size_t nrules, double c, rule_t *rules,
                         rule_t *labels, rule_t *minority, int ablation,
                         bool calculate_size, const char* type)
     : root_(0), nsamples_(nsamples), nrules_(nrules), c_(c),
-      num_nodes_(0), num_evaluated_(0), min_objective_(0.5),
-      ablation_(ablation), calculate_size_(calculate_size), type_(type) {
+      num_nodes_(0), num_evaluated_(0), ablation_(ablation),
+      calculate_size_(calculate_size), min_objective_(0.5),
+      opt_rulelist_({}), opt_predictions_({}), type_(type) {
     opt_rulelist_.resize(0);
     opt_predictions_.resize(0);
     // size_t i; (Currently unused)
