@@ -26,11 +26,10 @@ CacheTree::CacheTree(size_t nsamples, size_t nrules, double c, rule_t *rules,
                         bool calculate_size, const char* type)
     : root_(0), nsamples_(nsamples), nrules_(nrules), c_(c),
       num_nodes_(0), num_evaluated_(0), min_objective_(0.5),
-      opt_rulelist_({}), opt_predictions_({}), ablation_(ablation),
-      calculate_size_(calculate_size), type_(type) {
+      ablation_(ablation), calculate_size_(calculate_size), type_(type) {
     opt_rulelist_.resize(0);
     opt_predictions_.resize(0);
-    size_t i;
+    // size_t i; (Currently unused)
     rules_ = rules;
     labels_ = labels;
     if (minority) {
@@ -55,7 +54,7 @@ Node* CacheTree::construct_node(unsigned short new_rule, size_t nrules, bool pre
                          int len_prefix, double c, double equivalent_minority) {
     size_t num_captured = nsamples - num_not_captured;
     Node* n;
-    if (type_ == "curious") {
+    if (strcmp(type_, "curious") == 0) {
         double curiosity = (lower_bound - equivalent_minority) * nsamples / (double)(num_captured);
         n = (Node*) (new CuriousNode(new_rule, nrules, prediction, default_prediction,
                                 lower_bound, objective, curiosity, (CuriousNode*) parent, num_captured, equivalent_minority));
