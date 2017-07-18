@@ -23,8 +23,8 @@ class NullLogger {
 
     virtual void setLogFileName(char *fname) {}
     virtual void dumpState() {}
-    virtual std::string dumpPrefixLens() {}
-    virtual std::string dumpRemainingSpaceSize() {}
+    virtual std::string dumpPrefixLens() { return ""; }
+    virtual std::string dumpRemainingSpaceSize() { return ""; }
 
     virtual inline void setVerbosity(int verbosity) {}
     virtual inline int getVerbosity() { return 0; }
