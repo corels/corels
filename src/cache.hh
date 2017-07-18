@@ -133,14 +133,14 @@ class CacheTree {
     size_t nrules_;
     double c_;
 
+    double min_objective_;
+    tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist_;
+    std::vector<bool, track_alloc<bool, DataStruct::Tree> > opt_predictions_;
+
     size_t num_nodes_;
     size_t num_evaluated_;
     int ablation_; // Used to remove support (1) or lookahead (2) bounds
     bool calculate_size_;
-
-    double min_objective_;
-    tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist_;
-    std::vector<bool, track_alloc<bool, DataStruct::Tree> > opt_predictions_;
 
     rule_t *rules_;
     rule_t *labels_;

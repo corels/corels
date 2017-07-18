@@ -109,8 +109,7 @@ void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree
                           const rule_t rules[],
                           const rule_t labels[],
                           char fname[]) {
-    // Perhaps ruleList.size() > 0 was meant?
-    assert(/*rulelist.size() >= 0 && */rulelist.size() == preds.size() - 1);
+    assert(rulelist.size() == preds.size() - 1);
 
     printf("\nOPTIMAL RULE LIST\n");
     if (rulelist.size() > 0) {
