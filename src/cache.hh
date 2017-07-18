@@ -17,6 +17,8 @@ class Node {
          double lower_bound, double objective, Node* parent,
          size_t num_captured, double equivalent_minority);
 
+    virtual ~Node() {}
+
     inline unsigned short id() const;
     inline bool prediction() const;
     inline bool default_prediction() const;
@@ -47,7 +49,7 @@ class Node {
     }
 
   protected:
-    std::map<unsigned short, Node*, std::less<unsigned short>, 
+    std::map<unsigned short, Node*, std::less<unsigned short>,
         track_alloc<std::pair<unsigned short, Node*>, DataStruct::Tree> > children_;
     Node* parent_;
     double lower_bound_;
@@ -344,7 +346,7 @@ CacheTree::update_opt_predictions(Node* parent, bool new_pred, bool new_default_
 }
 
 /*
- * Increment number of nodes evaluated after performing incremental computation 
+ * Increment number of nodes evaluated after performing incremental computation
  * in evaluate_children.
  */
 inline void CacheTree::increment_num_evaluated() {

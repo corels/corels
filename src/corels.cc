@@ -4,7 +4,7 @@
 #include <sys/resource.h>
 #include <stdio.h>
 
-Queue::Queue(std::function<bool(Node*, Node*)> cmp, char* type)
+Queue::Queue(std::function<bool(Node*, Node*)> cmp, const char* type)
     : q_(new q (cmp)), type_(type) {}
 
 /*
@@ -46,7 +46,7 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
         // captured represents data captured by the new rule
         rule_vand(captured, parent_not_captured, tree->rule(i).truthtable, nsamples, &num_captured);
         // lower bound on antecedent support
-        if ((tree->ablation() != 1) && (num_captured < threshold)) 
+        if ((tree->ablation() != 1) && (num_captured < threshold))
             continue;
         rule_vand(captured_zeros, captured, tree->label(0).truthtable, nsamples, &c0);
         c1 = num_captured - c0;
@@ -170,7 +170,7 @@ int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p) {
     logger->initializeState(tree->calculate_size());
     int verbosity = logger->getVerbosity();
     // initial log record
-    logger->dumpState();         
+    logger->dumpState();
 
     min_objective = 1.0;
     tree->insert_root();
@@ -198,7 +198,7 @@ int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p) {
             if (tree->min_objective() < min_objective) {
                 min_objective = tree->min_objective();
                 if (verbosity >= 10)
-                    printf("before garbage_collect. num_nodes: %zu, log10(remaining): %zu\n", 
+                    printf("before garbage_collect. num_nodes: %zu, log10(remaining): %zu\n",
                             tree->num_nodes(), logger->getLogRemainingSpaceSize());
                 logger->dumpState();
                 tree->garbage_collect();
@@ -233,9 +233,9 @@ int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p) {
     else
         printf("Exited because max number of nodes in the tree was reached\n");
 
-    size_t tree_mem = logger->getTreeMemory(); 
-    size_t pmap_mem = logger->getPmapMemory(); 
-    size_t queue_mem = logger->getQueueMemory(); 
+    size_t tree_mem = logger->getTreeMemory();
+    size_t pmap_mem = logger->getPmapMemory();
+    size_t queue_mem = logger->getQueueMemory();
     printf("TREE mem usage: %zu\n", tree_mem);
     printf("PMAP mem usage: %zu\n", pmap_mem);
     printf("QUEUE mem usage: %zu\n", queue_mem);
