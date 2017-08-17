@@ -4,7 +4,7 @@
 #include <sys/resource.h>
 #include <stdio.h>
 
-Queue::Queue(std::function<bool(Node*, Node*)> cmp, char* type)
+Queue::Queue(std::function<bool(Node*, Node*)> cmp, char const *type)
     : q_(new q (cmp)), type_(type) {}
 
 /*
@@ -61,16 +61,11 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
         if ((tree->ablation() != 1) && (captured_correct < threshold))
             continue;
         // subtract off parent equivalent points bound because we want to use pure lower bound from parent
-        lower_bound = parent_lower_bound - parent_equivalent_minority + (float)(num_captured - captured_correct) / nsamples + c;
+        lower_bound = parent_lower_bound - parent_equivalent_minority + (double)(num_captured - captured_correct) / nsamples + c;
         logger->addToLowerBoundTime(time_diff(t1));
         logger->incLowerBoundNum();
-	if (tree->ablation() != 2) {
-            if ((lower_bound + c) >= tree->min_objective()) // hierarchical objective lower bound with lookahead bound
-                continue;
-        } else {
-            if (lower_bound >= tree->min_objective()) // hierarchical objective lower bound
+        if (lower_bound >= tree->min_objective()) // hierarchical objective lower bound
 	        continue;
-	}
         double t2 = timestamp();
         rule_vandnot(not_captured, parent_not_captured, captured, nsamples, &num_not_captured);
         rule_vand(not_captured_zeros, not_captured, tree->label(0).truthtable, nsamples, &d0);
@@ -82,7 +77,7 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
             default_prediction = 1;
             default_correct = d1;
         }
-        objective = lower_bound + (float)(num_not_captured - default_correct) / nsamples;
+        objective = lower_bound + (double)(num_not_captured - default_correct) / nsamples;
         logger->addToObjTime(time_diff(t2));
         logger->incObjNum();
         if (objective < tree->min_objective()) {
@@ -99,7 +94,7 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
         // calculate equivalent points bound to capture the fact that the minority points can never be captured correctly
         if (tree->has_minority()) {
             rule_vand(not_captured_equivalent, not_captured, tree->minority(0).truthtable, nsamples, &num_not_captured_equivalent);
-            equivalent_minority = (float)(num_not_captured_equivalent) / nsamples;
+            equivalent_minority = (double)(num_not_captured_equivalent) / nsamples;
             lower_bound += equivalent_minority;
         }
         if (tree->ablation() != 2)

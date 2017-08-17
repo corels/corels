@@ -91,7 +91,7 @@ std::string Logger::dumpPrefixLens() {
     std::string s = "";
     for(size_t i = 0; i < _nrules; ++i) {
         if (_state.prefix_lens[i] > 0) {
-            s += std::to_string(i); 
+            s += std::to_string(i);
             s += ":";
             s += std::to_string(_state.prefix_lens[i]);
             s += ";";
@@ -107,9 +107,9 @@ void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree
                           const tracking_vector<bool, DataStruct::Tree>& preds,
                           const bool latex_out,
                           const rule_t rules[],
-                          const rule_t labels[], 
+                          const rule_t labels[],
                           char fname[]) {
-    assert(rulelist.size() >= 0 && rulelist.size() == preds.size() - 1);
+    assert(rulelist.size() == preds.size() - 1);
 
     printf("\nOPTIMAL RULE LIST\n");
     if (rulelist.size() > 0) {

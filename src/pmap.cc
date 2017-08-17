@@ -17,14 +17,17 @@ Node* PrefixPermutationMap::insert (unsigned short new_rule, size_t nrules, bool
     
     unsigned char* ordered = (unsigned char*) malloc(sizeof(unsigned char) * (len_prefix + 1));
     ordered[0] = (unsigned char)len_prefix;
+
+    for (int i = 1; i < (len_prefix + 1); i++)
+	    ordered[i] = i - 1;
+
     std::function<bool(int, int)> cmp = [&](int i, int j) { return parent_prefix[i] < parent_prefix[j]; };
-    std::sort(&ordered[1], &ordered[len_prefix], cmp);
+    std::sort(&ordered[1], &ordered[len_prefix + 1], cmp);
     
     std::sort(parent_prefix.begin(), parent_prefix.end());
     unsigned short *pre_key = (unsigned short*) malloc(sizeof(unsigned short) * (len_prefix + 1));
     pre_key[0] = (unsigned short)len_prefix;
     memcpy(&pre_key[1], &parent_prefix[0], len_prefix * sizeof(unsigned short));
-    
     
     logger->addToMemory((len_prefix + 1) * (sizeof(unsigned char) + sizeof(unsigned short)), DataStruct::Pmap);
     prefix_key key = { pre_key };

@@ -23,13 +23,13 @@ class NullLogger {
 
     virtual void setLogFileName(char *fname) {}
     virtual void dumpState() {}
-    virtual std::string dumpPrefixLens() {}
-    virtual std::string dumpRemainingSpaceSize() {}
+    virtual std::string dumpPrefixLens() { return ""; }
+    virtual std::string dumpRemainingSpaceSize() { return ""; }
 
     virtual inline void setVerbosity(int verbosity) {}
     virtual inline int getVerbosity() { return 0; }
     virtual inline void setFrequency(int frequency) {}
-    virtual inline int getFrequency() {}
+    virtual inline int getFrequency() { return 1000; }
     virtual inline void addToLowerBoundTime(double t) {}
     virtual inline void incLowerBoundNum() {}
     virtual inline void addToObjTime(double t) {}
@@ -43,7 +43,7 @@ class NullLogger {
     virtual inline void addToEvalChildrenTime(double t) {}
     virtual inline void incEvalChildrenNum() {}
     virtual inline void setInitialTime(double t) {}
-    virtual inline double getInitialTime() {}
+    virtual inline double getInitialTime() { return 0.0; }
     virtual inline void setTotalTime(double t) {}
     virtual inline void addToPermMapInsertionTime(double t) {}
     virtual inline void incPermMapInsertionNum() {}
@@ -52,23 +52,23 @@ class NullLogger {
     virtual inline void setTreePrefixLen(size_t n) {}
     virtual inline void setTreeNumNodes(size_t n) {}
     virtual inline void setTreeNumEvaluated(size_t n) {}
-    virtual inline size_t getTreeMemory() {}
+    virtual inline size_t getTreeMemory() { return 0; }
     virtual inline void addToQueueInsertionTime(double t) {}
     virtual inline void setQueueSize(size_t n) {}
-    virtual inline size_t getQueueMemory() {}
+    virtual inline size_t getQueueMemory() { return 0; }
     virtual inline void setNRules(size_t nrules) {}
     virtual inline void setC(double c) {}
     virtual inline void initPrefixVec() {}
     virtual inline void incPrefixLen(size_t n) {}
     virtual inline void decPrefixLen(size_t n) {}
-    virtual inline size_t sumPrefixLens() {}
+    virtual inline size_t sumPrefixLens() { return 0; }
     virtual inline void updateQueueMinLen() {}
-    virtual inline size_t getQueueMinLen() {}
+    virtual inline size_t getQueueMinLen() { return 0; }
     virtual inline void incPmapSize() {}
     virtual inline void decreasePmapSize(size_t n) {}
     virtual inline void incPmapNullNum() {}
     virtual inline void incPmapDiscardNum() {}
-    virtual inline size_t getPmapMemory() {}
+    virtual inline size_t getPmapMemory() { return 0; }
     virtual inline void addToMemory(size_t n, DataStruct s) {}
     virtual inline void removeFromMemory(size_t n, DataStruct s) {}
     virtual inline void subtreeSize(mpz_t tot, unsigned int len_prefix, double lower_bound) {}
@@ -77,10 +77,10 @@ class NullLogger {
     virtual inline void removeQueueElement(unsigned int len_prefix, double lower_bound, bool approx) {}
     virtual inline void initRemainingSpaceSize() {}
     virtual inline void clearRemainingSpaceSize() {}
-    virtual inline size_t getLogRemainingSpaceSize() {}
+    virtual inline size_t getLogRemainingSpaceSize() { return 0; }
     /*
      * Initializes the logger by setting all fields to 0.
-     * This allwos us to write a log record immediately.
+     * This allows us to write a log record immediately.
      */
     void initializeState(bool calculate_size) {
         _state.total_time = 0.;

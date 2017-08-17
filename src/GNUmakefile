@@ -1,6 +1,27 @@
 CFLAGS := -g -W -Wall -Wno-unused-parameter -I. -DGMP -O$(O)
 
-LIBS := -L/usr/local/lib -lgmpxx -lgmp
+ifneq (,$(filter $(shell uname -n),elaines-MacBook-Pro.local Nicholass-Air-5.local))
+    LIBS := -L/usr/local/lib
+    CFLAGS += -I/usr/local/include
+else
+    LIBS :=
+endif
+
+LIBS += -L/usr/local/lib -lgmpxx -lgmp
+
+ifneq ($(shell uname -n),beepboop)
+    LDFLAGS :=
+    CFLAGS += -fno-omit-frame-pointer
+    ifneq ($(shell uname -r),15.6.0)
+        LIBS += -lprofiler -ltcmalloc
+    endif
+else
+    LDFLAGS :=
+endif
+
+ifneq ($(shell uname),Darwin)
+    LIBS += -lbsd
+endif
 
 CC = gcc
 CXX = g++ -std=c++11

@@ -23,14 +23,12 @@ Node::Node(unsigned short id, size_t nrules, bool prediction,
 
 CacheTree::CacheTree(size_t nsamples, size_t nrules, double c, rule_t *rules,
                         rule_t *labels, rule_t *minority, int ablation,
-                        bool calculate_size, char* type)
+                        bool calculate_size, char const *type)
     : root_(0), nsamples_(nsamples), nrules_(nrules), c_(c),
-      num_nodes_(0), num_evaluated_(0), min_objective_(0.5),
-      opt_rulelist_({}), opt_predictions_({}), ablation_(ablation),
-      calculate_size_(calculate_size), type_(type) {
+      num_nodes_(0), num_evaluated_(0), ablation_(ablation), calculate_size_(calculate_size), min_objective_(0.5),
+      opt_rulelist_({}), opt_predictions_({}), type_(type) {
     opt_rulelist_.resize(0);
     opt_predictions_.resize(0);
-    size_t i;
     rules_ = rules;
     labels_ = labels;
     if (minority) {
@@ -55,7 +53,7 @@ Node* CacheTree::construct_node(unsigned short new_rule, size_t nrules, bool pre
                          int len_prefix, double c, double equivalent_minority) {
     size_t num_captured = nsamples - num_not_captured;
     Node* n;
-    if (type_ == "curious") {
+    if (strcmp(type_, "curious") == 0) {
         double curiosity = (lower_bound - equivalent_minority) * nsamples / (double)(num_captured);
         n = (Node*) (new CuriousNode(new_rule, nrules, prediction, default_prediction,
                                 lower_bound, objective, curiosity, (CuriousNode*) parent, num_captured, equivalent_minority));
@@ -80,14 +78,15 @@ void CacheTree::insert_root() {
     d1 = nsamples_ - d0;
     if (d0 > d1) {
         default_prediction = 0;
-        objective = (float)(d1) / nsamples_;
+        objective = (double)(d1) / nsamples_;
     } else {
         default_prediction = 1;
-        objective = (float)(d0) / nsamples_;
+        objective = (double)(d0) / nsamples_;
     }
     double equivalent_minority = 0.;
     if (minority_ != NULL)
-        equivalent_minority = (float) count_ones_vector(minority_[0].truthtable, nsamples_) / nsamples_;
+        equivalent_minority = (double) count_ones_vector(minority_[0].truthtable, nsamples_) / nsamples_;
+
     root_ = new Node(nrules_, default_prediction, objective, equivalent_minority);
     min_objective_ = objective;
     logger->setTreeMinObj(objective);
@@ -166,7 +165,7 @@ void CacheTree::gc_helper(Node* node) {
             lb = child->lower_bound();
         if (lb >= min_objective_) {
             node->delete_child(child->id());
-            delete_subtree(this, child, false, calculate_size());
+            delete_subtree(this, child, false, false);
         } else
             gc_helper(child);
     }

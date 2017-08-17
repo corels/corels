@@ -17,7 +17,7 @@ static std::function<bool(Node*, Node*)> base_cmp = [](Node* left, Node* right) 
 
 // orders based on curiosity metric.
 static std::function<bool(Node*, Node*)> curious_cmp = [](Node* left, Node* right) {
-    return left->get_curiosity() <= right->get_curiosity();
+    return left->get_curiosity() >= right->get_curiosity();
 };
 
 // orders based on lower bound.
@@ -37,7 +37,7 @@ static std::function<bool(Node*, Node*)> dfs_cmp = [](Node* left, Node* right) {
 
 class Queue {
     public:
-        Queue(std::function<bool(Node*, Node*)> cmp, char* type); 
+        Queue(std::function<bool(Node*, Node*)> cmp, char const *type);
         // by default, initialize this as a BFS queue
         Queue() : Queue(base_cmp, "BFS") {};
         Node* front() {
@@ -55,7 +55,7 @@ class Queue {
         bool empty() {
             return q_->empty();
         }
-        inline char* type() {
+        inline char const * type() {
             return type_;
         }
 
@@ -97,12 +97,13 @@ class Queue {
                 prefix.push_back(node->id());
                 node = node->parent();
             }
+            std::reverse(prefix.begin(), prefix.end());
             return std::make_pair(selected_node, prefix);
         }
 
     private:
         q* q_;
-        char* type_;
+        char const *type_;
 };
 
 extern int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p);
