@@ -49,8 +49,7 @@ class Node {
     }
 
   protected:
-    std::map<unsigned short, Node*, std::less<unsigned short>,
-        track_alloc<std::pair<unsigned short, Node*>, DataStruct::Tree> > children_;
+    std::map<unsigned short, Node*, std::less<unsigned short>, track_alloc<std::pair<const unsigned short, Node*>, DataStruct::Tree> > children_;
     Node* parent_;
     double lower_bound_;
     double objective_;
@@ -71,7 +70,7 @@ class CuriousNode: public Node {
         CuriousNode(unsigned short id, size_t nrules, bool prediction, bool default_prediction,
              double lower_bound, double objective, double curiosity, CuriousNode* parent,
              size_t num_captured, double equivalent_minority) : Node(id, nrules, prediction, default_prediction,
-                 lower_bound, objective, parent, num_captured, equivalent_minority) {
+                 lower_bound, objective, (Node*)parent, num_captured, equivalent_minority) {
             curiosity_ = curiosity;
         }
 
