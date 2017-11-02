@@ -1,0 +1,11 @@
+Scalable Bayesian Rule List library.
+
+This distribution contains the source code distribution to build a library and
+test executable for the construction of scalable bayesian rule lists. The
+library contains functions to train a model (train) and make predictions
+using the model (predict). It also contains a rule list library for manipulating
+rule lists.
+
+The executable, sbrlmod, is a test program that exercises the rule library
+as well as the training and prediction.
+

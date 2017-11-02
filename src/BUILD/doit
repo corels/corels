@@ -1,0 +1,14 @@
+#! /bin/sh
+
+rm -rf Makefile Makefile.in config.log config.status configure
+rm -rf autom4te.cache aclocal.m4
+rm -rf COPYING INSTALL compile depcomp install-sh missing sbrlmod-1.0.tar.gz
+
+autoreconf --install --warnings=all
+aclocal
+automake
+CPPFLAGS="-I/opt/local/include -I/usr/local/include" \
+    LDFLAGS="-L/opt/local/lib -L/usr/local/lib" \
+    ./configure
+make
+

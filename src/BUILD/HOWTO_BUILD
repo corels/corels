@@ -1,0 +1,28 @@
+This directory is here simply to build the distribution.
+The distribution builds:
+
+	* Dynamic libraries*
+	* A statically linked executable testprog_static
+	* A dynamically linked executable testprog
+	* The tic-tac-toe testing and training data.
+
+How to build a distribution:
+
+1. Create links to the files from the source code that we need:
+
+ln -s ../*.[ch] .
+ln -s ../ttt_test.* .
+ln -s ../ttt_train.* .
+
+2. Now, build the distribution:
+sh doit
+make dist
+
+This will create sbrlmod-VERSION.tar.gz
+
+3. After you've created a distribution and moved it somewhere, the cleanup
+script will remove all the build process files leaving you a clean directory.
+(sh cleanup).
+
+* Everything is set up to allow for static builds, but they are commented out
+by default
