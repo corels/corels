@@ -1,7 +1,7 @@
 #! /bin/sh
 rm -rf Makefile Makefile.in config.log config.status configure
 rm -rf autom4te.cache aclocal.m4
-rm -rf COPYING INSTALL compile depcomp install-sh missing sbrlmod-1.0.tar.gz
-rm -rf libsbrlmod.la ltmain.sh config.sub config.guess m4 libtool
-rm -rf *.{c,h,cc,hh}
+rm -rf COPYING INSTALL compile depcomp install-sh missing corels-1.0.tar.gz
+rm -rf libcorels.la ltmain.sh config.sub config.guess m4 libtool
+rm -rf *.{c,h,cc,hh,o,lo} corels
 rm -f data
