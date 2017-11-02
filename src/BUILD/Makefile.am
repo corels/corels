@@ -13,7 +13,7 @@ AM_LDFLAGS = -L/opt/local/lib -L/usr/local/lib -lgsl -lgmp -lm -lc
 bin_PROGRAMS = corels
 # ADD THIS TO PREVIOUS LINE FOR STATIC BUILD: corels_static
 include_HEADERS = rule.h queue.hh pmap.hh alloc.hh cache.hh utils.hh
-dist_pkgdata_DATA = compas_test-binary.csv compas_test.csv compas_test.label compas_test.out compas_train-binary.csv compas_train.csv compas_train.label compas_train.minor compas_train.out
+dist_pkgdata_DATA = data/compas_test-binary.csv data/compas_test.csv data/compas_test.label data/compas_test.out data/compas_train-binary.csv data/compas_train.csv data/compas_train.label data/compas_train.minor data/compas_train.out
 
 # Static build -- not built by default, but it works
 corels_static_SOURCES = main.cc queue.hh pmap.hh alloc.hh cache.hh utils.hh
@@ -25,7 +25,7 @@ corels_SOURCES = main.cc queue.hh pmap.hh alloc.hh cache.hh utils.hh
 corels_LDADD = libcorels.la
 
 lib_LTLIBRARIES = libcorels.la
-libcorels_la_SOURCES = alloc.hh cache.cc cache.hh corels.cc pmap.cc pmap.hh queue.hh rule.h rulelib.c utils.cc utils.h
+libcorels_la_SOURCES = alloc.hh cache.cc cache.hh corels.cc pmap.cc pmap.hh queue.hh rule.h rulelib.c utils.cc utils.hh
 libcorels_la_LDFLAGS = -version-info $(LIBTOOL_VERSION)
 
 
