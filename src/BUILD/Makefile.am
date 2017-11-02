@@ -5,9 +5,8 @@ VERSION=$(MAJOR_VERSION).$(MINOR_VERSION)
 LIBTOOL_VERSION=$(MAJOR_VERSION):$(MINOR_VERSION)
 
 ACLOCAL_AMFLAGS= -I m4
-AM_CPPFLAGS = -DGMP -Wall -I. -I/usr/local/include -I/opt/local/include $(INCLUDES)
-AM_CXXFLAGS = -DGMP -Wall -I. -I/usr/local/include -I/opt/local/include $(INCLUDES)
-AM_LDFLAGS = -L/opt/local/lib -L/usr/local/lib -lgsl -lgmp -lm -lc
+AM_CPPFLAGS = -DGMP -Wall $(INCLUDES)
+AM_CXXFLAGS = -DGMP -Wall $(INCLUDES)
 
 # Support both static and dynamic builds
 bin_PROGRAMS = corels

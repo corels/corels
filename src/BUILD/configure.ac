@@ -24,11 +24,14 @@ AX_CXX_COMPILE_STDCXX_11
 #AC_CHECK_LIB([c], [cxx], [printf], [], [
 #echo "Standard C library is required for this program"
 #exit -1])
+AC_CHECK_LIB([m],[floor])
+AC_CHECK_LIB([gslcblas],[cblas_dgemm])
+LDFLAGS="$LDFLAGS -L/opt/local/lib -L/usr/local/lib"
+CPPFLAGS="$CPPFLAGS -I/opt/local/include -I/usr/local/include"
+CXXFLAGS="$CXXFLAGS -I/opt/local/include -I/usr/local/include"
 AC_CHECK_LIB([gmp], [__gmpz_clear], [], [
 	echo "GMP (Gnu multiprecision) library is required for this program"
 	exit -1])
-AC_CHECK_LIB([m],[floor])
-AC_CHECK_LIB([gslcblas],[cblas_dgemm])
 AC_CHECK_LIB([gsl], [gsl_ran_poisson], [], [
 	echo "GSL library is required for this program"
 	exit -1])
