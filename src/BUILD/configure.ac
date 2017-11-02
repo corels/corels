@@ -26,7 +26,7 @@ AX_CXX_COMPILE_STDCXX_11
 #exit -1])
 AC_CHECK_LIB([m],[floor])
 AC_CHECK_LIB([gslcblas],[cblas_dgemm])
-LDFLAGS="$LDFLAGS -L/opt/local/lib -L/usr/local/lib"
+LDFLAGS="$LDFLAGS -L/opt/local/lib -L/usr/local/lib -L/usr/lib64"
 CPPFLAGS="$CPPFLAGS -I/opt/local/include -I/usr/local/include"
 CXXFLAGS="$CXXFLAGS -I/opt/local/include -I/usr/local/include"
 AC_CHECK_LIB([gmp], [__gmpz_clear], [], [
