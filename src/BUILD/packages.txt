@@ -1,0 +1,19 @@
+In addition to creating the distribution here, we have created multiple
+packages for easy installation:
+
+1. Homebrew
+
+The files live in this repository:
+https://github.com/margoseltzer/homebrew-corels
+
+The package gets installed here:
+https://github.com/margoseltzer/corels-homebrew/files/1441466/corels-1.0.tar.gz
+(If a new upload changes this location, you need to update a file in the homebrew repository, which you'll need to update with a new sha256 anyway.)
+
+2. Arch linux
+
+The package file is here:
+https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=corels
+
+Updating the package requires changing the source and sha256sums in that file.
+
