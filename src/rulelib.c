@@ -864,7 +864,7 @@ rule_not(VECTOR dest, VECTOR src, int nsamples, int *ret_cnt)
 	count = 0;
 	assert(dest != NULL);
 	for (i = 0; i < nentries; i++) {
-		dest[i] = ~src2[i];
+		dest[i] = ~src[i];
 		count += count_ones(dest[i]);
 	}
 	*ret_cnt = count;
