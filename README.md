@@ -21,7 +21,7 @@ Senior thesis, 2017.
 
 CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 
-**Web UI can be found at: ** https://corels.eecs.harvard.edu/
+**Web UI can be found at:** https://corels.eecs.harvard.edu/
 
 ## Overview
 
