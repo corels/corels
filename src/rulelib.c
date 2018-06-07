@@ -31,7 +31,6 @@
 
 
 /* Function declarations. */
-int ascii_to_vector(char *, size_t, int *, int *, VECTOR *);
 int make_default(VECTOR *, int);
 #define RULE_INC 100
 
