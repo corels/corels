@@ -85,6 +85,7 @@ typedef std::unordered_map<captured_key, cap_val, captured_hash, cap_eq, track_a
 class PermutationMap {
     public:
         virtual size_t size() { return 0; }
+        virtual ~PermutationMap() { }
         virtual Node* insert (unsigned short new_rule,
                              size_t nrules, bool prediction, bool default_prediction, double lower_bound,
                              double objective, Node* parent, int num_not_captured, int nsamples, int len_prefix,
