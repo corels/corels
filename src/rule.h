@@ -168,6 +168,8 @@ int count_ones_vector(VECTOR, int);
 int rule_vector_equal(const VECTOR, const VECTOR, short, short);
 size_t rule_vector_hash(const VECTOR, short);
 
+int ascii_to_vector(char *, size_t, int *, int *, VECTOR *);
+
 /* Functions for the Scalable Baysian Rule Lists */
 double *predict(data_t *, pred_model_t *, params_t *);
 void ruleset_proposal(ruleset_t *, int, int *, int *, char *, double *);
