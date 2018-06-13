@@ -53,9 +53,6 @@ cache.o: cache.cc $(DEPSDIR)/stamp
 rulelib.o: rulelib.c $(DEPSDIR)/stamp
 	$(CC) $(CFLAGS) $(DEPCFLAGS) -c $< -o $@
 
-params.o: params.c $(DEPSDIR)/stamp
-	$(CXX) $(CFLAGS) $(DEPCFLAGS) -c $< -o $@
-
 $(DEPSDIR)/stamp:
 	mkdir -p $(dir $@)
 	touch $@
