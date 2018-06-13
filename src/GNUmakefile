@@ -1,4 +1,4 @@
-CFLAGS := -g -W -Wall -Wno-unused-parameter -fPIC -I. -DGMP -O$(O)
+CFLAGS := -g -W -Wall -Wno-unused-parameter -I. -DGMP -O$(O)
 
 ifneq (,$(filter $(shell uname -n),elaines-MacBook-Pro.local Nicholass-Air-5.local))
     LIBS := -L/usr/local/lib
@@ -28,18 +28,12 @@ CXX = g++ -std=c++11
 
 DEPSDIR := .deps
 
-CLEAN = corels libcorels.so *~ *.o *.so
+CLEAN = corels *~ *.o *.so
 
-all: corels libcorels.so
+all: corels
 
 corels: main.o corels.o pmap.o cache.o rulelib.o utils.o
 	$(CXX) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LIBS)
-
-libcorels.so: run.o params.o corels.o pmap.o cache.o rulelib.o utils.o
-	$(CXX) -shared  -Wl,-soname,$@ -o $@ $^
-
-run.o: run.cc $(DEPSDIR)/stamp
-	$(CXX) $(CFLAGS) $(DEPCFLAGS) -c $< -o $@
 
 main.o: main.cc $(DEPSDIR)/stamp
 	$(CXX) $(CFLAGS) $(DEPCFLAGS) -c $< -o $@
