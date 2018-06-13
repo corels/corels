@@ -41,10 +41,11 @@ CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 * [gmp](https://gmplib.org/) (GNU Multiple Precision Arithmetic Library)
 * [mpfr](http://www.mpfr.org/) (GNU MPFR Library for multiple-precision floating-point computations; depends on gmp)
 * [libmpc](http://www.multiprecision.org/) (GNU MPC for arbitrarily high precision and correct rounding; depends on gmp and mpfr)
+* [gperftools](https://github.com/gperftools/gperftools) (Google's malloc implementation and CPU profiler)
 
-e.g., [install libmpc](http://brewformulas.org/Libmpc) via [homewbrew](https://brew.sh/) (this will also install gmp and mpfr):
+e.g., [install libmpc](http://brewformulas.org/Libmpc) and [install gperftools](http://brewformulas.org/gperftools) via [homewbrew](https://brew.sh/) (libmpc will also install gmp and mpfr):
 
-    brew install libmpc
+    brew install libmpc gperftools
 
 ### Sample command
 
