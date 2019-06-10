@@ -22,6 +22,10 @@ This framework is a novel alternative to CART and other decision tree methods.
 * Nicholas Larus-Stone. **Learning Certifiably Optimal Rule Lists: A Case For Discrete Optimization in the 21st Century**.
 [Senior thesis](https://dash.harvard.edu/handle/1/38811502), 2017.
 
+* Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Margo Seltzer, Cynthia Rudin
+**Learning certifiably optimal rule lists for categorical data**
+[KDD](https://www.kdd.org/kdd2017/papers/view/learning-certifiably-optimal-rule-lists-for-categorical-data), 2017
+
 CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 
 **Web UI can be found at:** https://corels.eecs.harvard.edu/
