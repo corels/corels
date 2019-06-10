@@ -20,7 +20,7 @@ This framework is a novel alternative to CART and other decision tree methods.
 [SysML](http://www.sysml.cc/doc/2018/54.pdf), 2018
 
 * Nicholas Larus-Stone. **Learning Certifiably Optimal Rule Lists: A Case For Discrete Optimization in the 21st Century**.
-Senior thesis, 2017.
+[Senior thesis](https://dash.harvard.edu/handle/1/38811502), 2017.
 
 CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 
