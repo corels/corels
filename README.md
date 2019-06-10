@@ -11,15 +11,13 @@ Our approach produces optimal rule lists on practical
 problems in seconds.
 This framework is a novel alternative to CART and other decision tree methods.
 
-http://www.jmlr.org/papers/volume18/17-716/17-716.pdf
-
 * Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Margo Seltzer, and Cynthia Rudin.
 **Learning Certifiably Optimal Rule Lists for Categorical Data**.
 [JMLR](http://www.jmlr.org/papers/volume18/17-716/17-716.pdf), 2018.
 
 * Nicholas Larus-Stone, Elaine Angelino, Daniel Alabi, Margo Seltzer, Vassilios Kaxiras, Aditya Saligrama, Cynthia Rudin
 **Systems Optimizations for Learning Certifiably Optimal Rule Lists**
-[SysML] (http://www.sysml.cc/doc/2018/54.pdf), 2018
+[SysML](http://www.sysml.cc/doc/2018/54.pdf), 2018
 
 * Nicholas Larus-Stone. **Learning Certifiably Optimal Rule Lists: A Case For Discrete Optimization in the 21st Century**.
 Senior thesis, 2017.
