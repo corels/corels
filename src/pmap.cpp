@@ -6,6 +6,16 @@ PrefixPermutationMap::PrefixPermutationMap()
 CapturedPermutationMap::CapturedPermutationMap()
     : pmap(new CapturedMap) {}
 
+PrefixPermutationMap::~PrefixPermutationMap() {
+    if(pmap)
+        delete pmap;
+}
+
+CapturedPermutationMap::~CapturedPermutationMap() {
+    if(pmap)
+        delete pmap;
+}
+
 Node* PrefixPermutationMap::insert (unsigned short new_rule, size_t nrules, bool prediction, 
         bool default_prediction, double lower_bound, double objective, Node* parent, 
         int num_not_captured, int nsamples, int len_prefix, double c, double equivalent_minority,

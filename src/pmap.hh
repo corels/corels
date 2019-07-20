@@ -58,9 +58,9 @@ struct captured_key {
 struct cap_eq {
     bool operator()(const captured_key& k, const captured_key& other) const {
 #ifdef GMP
-        return rule_vector_equal(k.key, other.key, 0, 0);
+        return !rule_vector_cmp(k.key, other.key, 0, 0);
 #else
-        return rule_vector_equal(k.key, other.key, k.len, other.len);
+        return !rule_vector_cmp(k.key, other.key, k.len, other.len);
 #endif
     }
 };
@@ -85,6 +85,7 @@ typedef std::unordered_map<captured_key, cap_val, captured_hash, cap_eq, track_a
 class PermutationMap {
     public:
         virtual size_t size() { return 0; }
+        virtual ~PermutationMap() { }
         virtual Node* insert (unsigned short new_rule,
                              size_t nrules, bool prediction, bool default_prediction, double lower_bound,
                              double objective, Node* parent, int num_not_captured, int nsamples, int len_prefix,
@@ -100,6 +101,7 @@ class PermutationMap {
 class PrefixPermutationMap : public PermutationMap {
 	public:
         PrefixPermutationMap ();
+        ~PrefixPermutationMap ();
         size_t size() override {
             return pmap->size();
         }
@@ -115,6 +117,7 @@ class PrefixPermutationMap : public PermutationMap {
 class CapturedPermutationMap : public PermutationMap {
 	public:
         CapturedPermutationMap();
+        ~CapturedPermutationMap();
         size_t size() override {
             return pmap->size();
         }
