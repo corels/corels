@@ -144,6 +144,7 @@ void ruleset_print(ruleset_t *, rule_t *, int);
 void ruleset_entry_print(ruleset_entry_t *, int, int);
 int create_random_ruleset(int, int, int, rule_t *, ruleset_t **);
 
+int rules_init(const char *, int *, int *, rule_t **, int);
 void rules_free(rule_t *, const int, int);
 
 void rule_print(rule_t *, int, int, int);

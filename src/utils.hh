@@ -1,15 +1,14 @@
 #pragma once
 
-#include "rule.h"
-#include "time.hh"
-
 #include <cstdlib>
 #include <string.h>
 #include <stdio.h>
 #include <fstream>
 #include <vector>
 #include <set>
+#include <chrono>
 
+#include "rule.hh"
 
 
 
@@ -337,9 +336,9 @@ class Logger : public NullLogger {
 extern NullLogger* logger;
 
 inline double timestamp() {
-    struct timeval now;
-    gettimeofday(&now, 0);
-    return now.tv_sec + now.tv_usec * 0.000001;
+    std::chrono::duration<double> duration = std::chrono::steady_clock::now().time_since_epoch();
+
+    return duration.count();
 }
 
 inline double time_diff(double t0) {
@@ -357,5 +356,4 @@ void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree
                           const bool latex_out,
                           const rule_t rules[],
                           const rule_t labels[],
-                          char fname[],
-   			  int print_progress);
+                          char fname[]);

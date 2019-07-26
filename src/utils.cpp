@@ -1,21 +1,13 @@
 #include "utils.hh"
 #include <stdio.h>
 #include <assert.h>
-
-// This patch taken from StackOverflow: https://stackoverflow.com/a/20861692
-#ifdef _WIN32
 #include <sstream>
 
-namespace patch
-{
-    template < typename T > std::string to_string( const T& n )
-    {
-        std::ostringstream stm ;
-        stm << n ;
-        return stm.str() ;
-    }
+std::string sizet_tostring(size_t v) {
+    std::ostringstream ss;
+    ss << v;
+    return ss.str();
 }
-#endif
 
 Logger::Logger(double c, size_t nrules, int verbosity, char* log_fname, int freq) {
       _c = c;
@@ -51,8 +43,6 @@ void Logger::setLogFileName(char *fname) {
  * Writes current stats about the execution to the log file.
  */
 void Logger::dumpState() {
-    if (_v < 1) return;
-
     // update timestamp here
     setTotalTime(time_diff(_state.initial_time));
 
@@ -93,17 +83,10 @@ std::string Logger::dumpPrefixLens() {
     std::string s = "";
     for(size_t i = 0; i < _nrules; ++i) {
         if (_state.prefix_lens[i] > 0) {
-#ifdef _WIN32
-            s += patch::to_string(i);
+            s += sizet_tostring(i);
             s += ":";
-            s += patch::to_string(_state.prefix_lens[i]);
+            s += sizet_tostring(_state.prefix_lens[i]);
             s += ";";
-#else
-            s += std::to_string(i);
-            s += ":";
-            s += std::to_string(_state.prefix_lens[i]);
-            s += ";";
-#endif
         }
     }
     return s;

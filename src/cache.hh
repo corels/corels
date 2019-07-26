@@ -2,7 +2,7 @@
 
 #include "utils.hh"
 #include "alloc.hh"
-#include "rule.h"
+#include "rule.hh"
 #include <iterator>
 #include <map>
 #include <vector>

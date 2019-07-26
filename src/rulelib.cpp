@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "rule.h"
+#include "rule.hh"
 
 
 /* Function declarations. */
@@ -57,6 +57,113 @@ int byte_ones[] = {
 
 #define BYTE_MASK	0xFF
 
+
+/*
+ * Preprocessing step.
+ * INPUTS: Using the python from the BRL_code.py: Call get_freqitemsets
+ * to generate data files of the form:
+ * 	Rule<TAB><bit vector>\n
+ *
+ * OUTPUTS: an array of rule_t's
+ */
+int
+rules_init(const char *infile, int *nrules,
+    int *nsamples, rule_t **rules_ret, int add_default_rule)
+{
+	FILE *fi;
+	char *line = NULL;
+    char *rulestr;
+	int rule_cnt, sample_cnt, rsize;
+	int i, ones, ret;
+	rule_t *rules=NULL;
+	size_t len = 0;
+    size_t rulelen;
+
+	sample_cnt = rsize = 0;
+
+	if ((fi = fopen(infile, "r")) == NULL)
+        return (errno);
+
+	/*
+	 * Leave a space for the 0th (default) rule, which we'll add at
+	 * the end.
+	 */
+	rule_cnt = add_default_rule != 0 ? 1 : 0;
+	while (getline(&line, &len, fi) != -1) {
+        char* line_cpy = line;
+		if (rule_cnt >= rsize) {
+			rsize += RULE_INC;
+                	rules = (rule_t*)realloc(rules, rsize * sizeof(rule_t));
+			if (rules == NULL)
+				goto err;
+		}
+
+		/* Get the rule string; line will contain the bits. */
+		if ((rulestr = strsep(&line_cpy, " ")) == NULL)
+			goto err;
+
+		rulelen = strlen(rulestr) + 1;
+		len -= rulelen;
+
+		if ((rules[rule_cnt].features = strdup(rulestr)) == NULL)
+			goto err;
+
+		/*
+		 * At this point "len" is a line terminated by a newline
+		 * at line[len-1]; let's make it a NUL and shorten the line
+		 * length by one.
+		 */
+		line_cpy[len-1] = '\0';
+		if (ascii_to_vector(line_cpy, len, &sample_cnt, &ones,
+		    &rules[rule_cnt].truthtable) != 0)
+		    	goto err;
+		rules[rule_cnt].support = ones;
+
+		/* Now compute the number of clauses in the rule. */
+		rules[rule_cnt].cardinality = 1;
+		for (char *cp = rulestr; *cp != '\0'; cp++)
+			if (*cp == ',')
+				rules[rule_cnt].cardinality++;
+		rule_cnt++;
+        free(line);
+        line = NULL;
+	}
+	/* All done! */
+	fclose(fi);
+
+	/* Now create the 0'th (default) rule. */
+	if (add_default_rule) {
+		rules[0].support = sample_cnt;
+		rules[0].features = (char*)"default";
+		rules[0].cardinality = 0;
+		if (make_default(&rules[0].truthtable, sample_cnt) != 0)
+		    goto err;
+	}
+
+	*nsamples = sample_cnt;
+	*nrules = rule_cnt;
+	*rules_ret = rules;
+
+	return (0);
+
+err:
+	ret = errno;
+
+	/* Reclaim space. */
+	if (rules != NULL) {
+		for (i = 1; i < rule_cnt; i++) {
+			free(rules[i].features);
+#ifdef GMP
+			mpz_clear(rules[i].truthtable);
+#else
+			free(rules[i].truthtable);
+#endif
+		}
+		free(rules);
+	}
+	(void)fclose(fi);
+	return (ret);
+}
 
 void
 rules_free(rule_t *rules, const int nrules, int add_default) {
