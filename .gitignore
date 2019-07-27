@@ -25,3 +25,4 @@ src/tags
 # Specific to bbcache
 *.txt
 logs/
+!logs/README.txt

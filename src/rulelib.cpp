@@ -115,8 +115,11 @@ rules_init(const char *infile, int *nrules,
 		 */
 		line_cpy[len-1] = '\0';
 		if (ascii_to_vector(line_cpy, len, &sample_cnt, &ones,
-		    &rules[rule_cnt].truthtable) != 0)
+		    &rules[rule_cnt].truthtable) != 0) {
+                fprintf(stderr, "Loading rule '%s' failed\n", rulestr);
+                errno = 1;
 		    	goto err;
+        }
 		rules[rule_cnt].support = ones;
 
 		/* Now compute the number of clauses in the rule. */
@@ -128,6 +131,7 @@ rules_init(const char *infile, int *nrules,
         free(line);
         line = NULL;
 	}
+    free(line);
 	/* All done! */
 	fclose(fi);
 
@@ -280,7 +284,7 @@ ascii_to_vector(char *line, size_t len, int *nsamples, int *nones, VECTOR *ret)
 	ones = 0;
 
 
-	for(p = line; len-- > 0; p++) {
+	for(p = line; len-- > 0 && *p != '\0'; p++) {
 		switch (*p) {
 			case '0':
 				val <<= 1;
@@ -314,12 +318,13 @@ ascii_to_vector(char *line, size_t len, int *nsamples, int *nones, VECTOR *ret)
 	else if (*nsamples != i) {
 		fprintf(stderr, "Wrong number of samples. Expected %d got %d\n",
 		    *nsamples, i);
-		/* free(buf); */
+		free(buf);
 		buf = NULL;
+        ones = 0;
 	}
 	*nones = ones;
 	*ret = buf;
-	return (0);
+	return *ret == NULL;
 #endif
 }
 

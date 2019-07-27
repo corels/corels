@@ -50,7 +50,7 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
 {
     g_verbosity.clear();
 
-    const char *voptions = "rule|label|samples|progress|loud|mine|minor";
+    const char *voptions = "rule|label|minor|samples|progress|loud";
 
     char *vopt = NULL;
     char *vcopy = _strdup(vstring);
@@ -68,7 +68,6 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
         g_verbosity.insert("progress");
         g_verbosity.insert("label");
         g_verbosity.insert("rule");
-        g_verbosity.insert("mine");
         g_verbosity.insert("minor");
     }
 

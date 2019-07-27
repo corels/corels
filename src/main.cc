@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[]) {
     const char usage[] = "USAGE: %s [-b] "
-        "[-n max_num_nodes] [-r regularization] [-v (rule|label|samples|progress|loud|mine|minor|log|silent)] "
+        "[-n max_num_nodes] [-r regularization] [-v (rule|label|minor|samples|progress|loud|silent)] "
         "-c (1|2|3|4) -p (0|1|2) [-f logging_frequency] "
         "-a (0|1|2) [-s] [-L latex_out]"
         "data.out data.label [data.minor]\n\n"
@@ -20,10 +20,12 @@ int main(int argc, char *argv[]) {
     bool run_curiosity = false;
     int curiosity_policy = 0;
     bool latex_out = false;
+    bool use_prefix_perm_map = false;
+    bool use_captured_sym_map = false;
     char *vopt, *verb_trim;
     std::set<std::string> verbosity;
     bool verr = false;
-    const char *vstr = "rule|label|samples|progress|silent";
+    const char *vstr = "rule|label|minor|samples|progress|loud|silent";
     int map_type = 0;
     int max_num_nodes = 100000;
     double c = 0.01;
@@ -53,6 +55,8 @@ int main(int argc, char *argv[]) {
             break;
         case 'p':
             map_type = atoi(optarg);
+            use_prefix_perm_map = map_type == 1;
+            use_captured_sym_map = map_type == 2;
             break;
         case 'v':
             verb_trim = strtok(optarg, " ");
@@ -113,15 +117,15 @@ int main(int argc, char *argv[]) {
     if (verr) {
         error = true;
         snprintf(error_txt, BUFSZ,
-                 "verbosity options must be one or more of (rule|label|samples|progress|loud|mine|minor|silent), separated with commas (i.e. -v progress,samples)");
+                 "verbosity options must be one or more of (rule|label|samples|progress|loud|silent), separated with commas (i.e. -v progress,samples)");
     }
     else {
         if (verbosity.count("samples") && !(verbosity.count("rule") || verbosity.count("label") || verbosity.count("minor") || verbosity.count("loud"))) {
             error = true;
             snprintf(error_txt, BUFSZ,
-                     "verbosity 'samples' option must be combined with at least one of (rule|label|minor|loud)");
+                     "verbosity 'samples' option must be combined with at least one of (rule|label|minor|samples|progress|loud|silent)");
         }
-        if (verbosity.size() > 2 && verbosity.count("silent")) {
+        if (verbosity.size() > 1 && verbosity.count("silent")) {
             snprintf(error_txt, BUFSZ,
                      "verbosity 'silent' option must be passed without any additional verbosity parameters");
         }
@@ -188,8 +192,7 @@ int main(int argc, char *argv[]) {
             meta = NULL;
             nmeta = 0;
         }
-
-        if(nsamples_check != nsamples) {
+        else if(nsamples_check != nsamples) {
             fprintf(stderr, "nsamples mismatch between out file (%d) and minor file (%d), skipping minor file...\n", nsamples, nsamples_check);
             rules_free(meta, nmeta, 0);
             meta = NULL;
@@ -199,8 +202,21 @@ int main(int argc, char *argv[]) {
     else
         meta = NULL;
     
-    char log_fname[] = "corels-log.txt";
-    char opt_fname[] = "corels-opt.txt";
+    char froot[BUFSZ];
+    char log_fname[BUFSZ];
+    char opt_fname[BUFSZ];
+    const char* pch = strrchr(argv[0], '/');
+    snprintf(froot, BUFSZ, "../logs/for-%s-%s%s-%s-%s-removed=%s-max_num_nodes=%d-c=%.7f-v=%s-f=%d",
+            pch ? pch + 1 : "",
+            run_bfs ? "bfs" : "",
+            run_curiosity ? curiosity_map[curiosity_policy].c_str() : "",
+            use_prefix_perm_map ? "with_prefix_perm_map" :
+                (use_captured_sym_map ? "with_captured_symmetry_map" : "no_pmap"),
+            meta ? "minor" : "no_minor",
+            ablation ? ((ablation == 1) ? "support" : "lookahead") : "none",
+            max_num_nodes, c, verbstr, freq);
+    snprintf(log_fname, BUFSZ, "%s.txt", froot);
+    snprintf(opt_fname, BUFSZ, "%s-opt.txt", froot);
 
     int ret = 0;
 
@@ -212,7 +228,14 @@ int main(int argc, char *argv[]) {
         int* rulelist = NULL;
         int rulelist_size = 0;
         int* classes = NULL;
+    
         run_corels_end(&rulelist, &rulelist_size, &classes, 0, latex_out, rules, labels, &opt_fname[0]);
+
+        if(rulelist)
+            free(rulelist);
+
+        if(classes)
+            free(classes);
     } else {
         fprintf(stderr, "Setup failed!\n");
         ret = 2;
