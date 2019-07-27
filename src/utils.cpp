@@ -1,8 +1,13 @@
 #include "utils.hh"
 #include <stdio.h>
 #include <assert.h>
-#include <sys/utsname.h>
+#include <sstream>
 
+std::string sizet_tostring(size_t v) {
+    std::ostringstream ss;
+    ss << v;
+    return ss.str();
+}
 
 Logger::Logger(double c, size_t nrules, int verbosity, char* log_fname, int freq) {
       _c = c;
@@ -31,15 +36,13 @@ void Logger::setLogFileName(char *fname) {
        << "tree_num_nodes,tree_num_evaluated,tree_memory,"
        << "queue_size,queue_min_length,queue_memory,"
        << "pmap_size,pmap_null_num,pmap_discard_num,"
-       << "log_remaining_space_size,prefix_lengths" << endl;
+       << "prefix_lengths" << endl;
 }
 
 /*
  * Writes current stats about the execution to the log file.
  */
 void Logger::dumpState() {
-    if (_v < 1) return;
-
     // update timestamp here
     setTotalTime(time_diff(_state.initial_time));
 
@@ -70,18 +73,7 @@ void Logger::dumpState() {
        << _state.pmap_size << ","
        << _state.pmap_null_num << ","
        << _state.pmap_discard_num << ","
-       << getLogRemainingSpaceSize() << ","
        << dumpPrefixLens().c_str() << endl;
-}
-
-/*
- * Uses GMP library to dump a string version of the remaining state space size.
- * This number is typically very large (e.g. 10^20) which is why we use GMP instead of a long.
- * Note: this function may not work on some Linux machines.
- */
-std::string Logger::dumpRemainingSpaceSize() {
-    mpz_class s(_state.remaining_space_size);
-    return s.get_str();
 }
 
 /*
@@ -91,9 +83,9 @@ std::string Logger::dumpPrefixLens() {
     std::string s = "";
     for(size_t i = 0; i < _nrules; ++i) {
         if (_state.prefix_lens[i] > 0) {
-            s += std::to_string(i);
+            s += sizet_tostring(i);
             s += ":";
-            s += std::to_string(_state.prefix_lens[i]);
+            s += sizet_tostring(_state.prefix_lens[i]);
             s += ";";
         }
     }
@@ -155,22 +147,4 @@ void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree
     }
     f << "default~" << preds.back();
     f.close();
-}
-
-/*
- * Prints out information about the machine.
- */
-void print_machine_info() {
-    struct utsname buffer;
-
-    if (uname(&buffer) == 0) {
-        printf("System information:\n"
-               "system name-> %s; node name-> %s; release-> %s; "
-               "version-> %s; machine-> %s\n\n",
-               buffer.sysname,
-               buffer.nodename,
-               buffer.release,
-               buffer.version,
-               buffer.machine);
-    }
 }

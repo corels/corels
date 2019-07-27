@@ -11,6 +11,10 @@ Node::Node(size_t nrules, bool default_prediction, double objective, double equi
           (void) nrules;
 }
 
+Node::~Node() {
+}
+
+
 Node::Node(unsigned short id, size_t nrules, bool prediction,
               bool default_prediction, double lower_bound, double objective,
               Node* parent, size_t num_captured, double equivalent_minority)
@@ -43,7 +47,7 @@ CacheTree::CacheTree(size_t nsamples, size_t nrules, double c, rule_t *rules,
 }
 
 CacheTree::~CacheTree() {
-    if (root_)
+    if(num_nodes())
         delete_subtree(this, root_, true, false);
 }
 
@@ -69,11 +73,11 @@ Node* CacheTree::construct_node(unsigned short new_rule, size_t nrules, bool pre
  * Inserts the root of the tree, setting up the default rules.
  */
 void CacheTree::insert_root() {
-    VECTOR tmp_vec;
+    //VECTOR tmp_vec;
     size_t d0, d1;
     bool default_prediction;
     double objective;
-    make_default(&tmp_vec, nsamples_);
+    //make_default(&tmp_vec, nsamples_);
     d0 = labels_[0].support;
     d1 = nsamples_ - d0;
     if (d0 > d1) {
@@ -175,8 +179,6 @@ void CacheTree::gc_helper(Node* node) {
  * Public wrapper function to garbage collect the entire tree beginning from the root.
  */
 void CacheTree::garbage_collect() {
-    if (calculate_size_)
-        logger->clearRemainingSpaceSize();
     gc_helper(root_);
 }
 
@@ -202,7 +204,7 @@ void delete_subtree(CacheTree* tree, Node* node, bool destructive,
         delete node;
     } else {
         // only delete leaf nodes in destructive mode
-        if (destructive) {  
+        if (destructive) { 
             tree->decrement_num_nodes();
             delete node;
         } else {

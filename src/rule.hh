@@ -73,9 +73,6 @@ typedef v_entry *VECTOR;
 
 #define BITS_PER_ENTRY (sizeof(v_entry) * 8)
 
-#define RANDOM_RANGE(lo, hi) \
-    (unsigned)(lo + (unsigned)((random() / (float)RAND_MAX) * (hi - lo + 1)))
-
 /*
  * We have slightly different structures to represent the original rules 
  * and rulesets. The original structure contains the ascii representation
@@ -86,6 +83,7 @@ typedef struct rule {
 	char *features;			/* Representation of the rule. */
 	int support;			/* Number of 1's in truth table. */
 	int cardinality;
+    int *ids;
 	VECTOR truthtable;		/* Truth table; one bit per sample. */
 } rule_t;
 
@@ -99,7 +97,7 @@ typedef struct ruleset {
 	int n_rules;			/* Number of actual rules. */
 	int n_alloc;			/* Spaces allocated for rules. */
 	int n_samples;
-	ruleset_entry_t rules[];	/* Array of rules. */
+	ruleset_entry_t* rules;	/* Array of rules. */
 } ruleset_t;
 
 typedef struct params {
@@ -150,11 +148,12 @@ int rules_init(const char *, int *, int *, rule_t **, int);
 void rules_free(rule_t *, const int, int);
 
 void rule_print(rule_t *, int, int, int);
-void rule_print_all(rule_t *, int, int);
+void rule_print_all(rule_t *, int, int, int);
 void rule_vector_print(VECTOR, int);
 void rule_copy(VECTOR, VECTOR, int);
 
-int rule_isset(VECTOR, int);
+int rule_isset(VECTOR, int, int);
+void rule_set(VECTOR, int, int, int);
 int rule_vinit(int, VECTOR *);
 int rule_vfree(VECTOR *);
 int make_default(VECTOR *, int);
@@ -165,8 +164,11 @@ void rule_vor(VECTOR, VECTOR, VECTOR, int, int *);
 void rule_not(VECTOR, VECTOR, int, int *);
 int count_ones(v_entry);
 int count_ones_vector(VECTOR, int);
-int rule_vector_equal(const VECTOR, const VECTOR, short, short);
+int rule_vector_equal(const VECTOR, const VECTOR, int, int);
+int rule_vector_cmp(const VECTOR, const VECTOR, int, int);
 size_t rule_vector_hash(const VECTOR, short);
+
+int ascii_to_vector(char *, size_t, int *, int *, VECTOR *);
 
 /* Functions for the Scalable Baysian Rule Lists */
 double *predict(data_t *, pred_model_t *, params_t *);

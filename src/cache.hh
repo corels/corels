@@ -2,12 +2,13 @@
 
 #include "utils.hh"
 #include "alloc.hh"
-#include "rule.h"
+#include "rule.hh"
 #include <iterator>
 #include <map>
 #include <vector>
 #include <stdlib.h>
 #include <memory>
+#include <algorithm>
 
 class Node {
   public:
@@ -17,8 +18,8 @@ class Node {
          double lower_bound, double objective, Node* parent,
          size_t num_captured, double equivalent_minority);
 
-    virtual ~Node() {}
-
+    virtual ~Node();
+     
     inline unsigned short id() const;
     inline bool prediction() const;
     inline bool default_prediction() const;
@@ -27,7 +28,7 @@ class Node {
     inline bool done() const;
     inline void set_done();
     inline bool deleted() const;
-    inline void set_deleted();
+    inline void set_deleted(); 
 
     // Returns pair of prefixes and predictions for the path from this node to the root
     inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> >
@@ -73,6 +74,8 @@ class CuriousNode: public Node {
                  lower_bound, objective, (Node*)parent, num_captured, equivalent_minority) {
             curiosity_ = curiosity;
         }
+
+        ~CuriousNode() {};
 
         inline double get_curiosity() override;
     protected:
