@@ -1,1 +1,1 @@
-Log and optimal rulelist files are stored here
+Optimal rule lists and logs are stored here.

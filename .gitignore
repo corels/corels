@@ -23,6 +23,5 @@ src/.deps/*
 src/tags
 
 # Specific to bbcache
-*.txt
-logs/
+logs/*
 !logs/README.txt

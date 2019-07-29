@@ -26,6 +26,7 @@ class NullLogger {
     virtual void setLogFileName(char *fname) {}
     virtual void dumpState() {}
     virtual std::string dumpPrefixLens() { return ""; }
+    virtual std::string dumpRemainingSpaceSize() { return ""; }
 
     virtual inline void setVerbosity(int verbosity) {}
     virtual inline int getVerbosity() { return 0; }
@@ -72,8 +73,15 @@ class NullLogger {
     virtual inline size_t getPmapMemory() { return 0; }
     virtual inline void addToMemory(size_t n, DataStruct s) {}
     virtual inline void removeFromMemory(size_t n, DataStruct s) {}
+#ifdef GMP
+    virtual inline void subtreeSize(mpz_t tot, unsigned int len_prefix, double lower_bound) {}
+    virtual inline void approxRemainingSize(mpz_t tot, unsigned int len_prefix) {}
+#endif
     virtual inline void addQueueElement(unsigned int len_prefix, double lower_bound, bool approx) {}
     virtual inline void removeQueueElement(unsigned int len_prefix, double lower_bound, bool approx) {}
+    virtual inline void initRemainingSpaceSize() {}
+    virtual inline void clearRemainingSpaceSize() {}
+    virtual inline size_t getLogRemainingSpaceSize() { return 0; }
     /*
      * Initializes the logger by setting all fields to 0.
      * This allows us to write a log record immediately.
@@ -108,6 +116,11 @@ class NullLogger {
         _state.pmap_memory = 0;
         _state.pmap_null_num = 0;
         _state.pmap_discard_num = 0;
+#ifdef GMP
+        mpz_init(_state.remaining_space_size);
+        if (calculate_size)
+            initRemainingSpaceSize();
+#endif
     }
 
 
@@ -144,6 +157,9 @@ class NullLogger {
         size_t pmap_discard_num;                // number of pmap lookups that trigger discard
         size_t pmap_memory;
         size_t* prefix_lens;
+#ifdef GMP
+        mpz_t remaining_space_size;
+#endif
     };
     double _c;
     size_t _nrules;
@@ -172,6 +188,9 @@ class Logger : public NullLogger {
     void setLogFileName(char *fname) override;
     void dumpState() override;
     std::string dumpPrefixLens() override;
+#ifdef GMP
+    std::string dumpRemainingSpaceSize() override;
+#endif
 
     inline void setVerbosity(int verbosity) override {
         _v = verbosity;
@@ -331,6 +350,69 @@ class Logger : public NullLogger {
         else if (data_struct == DataStruct::Pmap)
             _state.pmap_memory -= n;
     }
+#ifdef GMP
+    inline void subtreeSize(mpz_t tot, unsigned int len_prefix, double lower_bound) override {
+        // Theorem 4 (fine-grain upper bound on number of remaining prefix evaluations)
+        unsigned int f_naive = _nrules - len_prefix;
+        unsigned int f = (_state.tree_min_objective - lower_bound) / _c;
+        if (f_naive < f)
+            f = f_naive;
+        mpz_set_ui(tot, _nrules - len_prefix);
+        for (unsigned int k = (_nrules - len_prefix - 1);
+                k >= (_nrules - len_prefix - f + 1); k--) {
+            mpz_addmul_ui(tot, tot, k);
+        }
+    }
+    inline void approxRemainingSize(mpz_t tot, unsigned int len_prefix) override {
+        // Proposition 3 (coarse-grain upper bound on number of remaining prefix evaluations)
+        size_t K = (size_t) (_state.tree_min_objective / _c);
+        if (K > _nrules)
+            K = _nrules;
+
+         // sum_{j=0}^M Q_j sum_{k=1}^{K-j} (M - j)! / (M - j - k)!
+        mpz_set_ui(tot, _nrules - len_prefix);
+        for(size_t k = (_nrules - len_prefix - 1); k >= (_nrules - len_prefix - K + 1); --k)
+            mpz_addmul_ui(tot, tot, k);
+
+         // multiply by Qj
+        mpz_mul_ui(tot, tot, _state.prefix_lens[len_prefix]);
+    }
+    inline void addQueueElement(unsigned int len_prefix, double lower_bound, bool approx) override {
+        mpz_t tot;
+        mpz_init(tot);
+        if (approx)
+            approxRemainingSize(tot, len_prefix);
+        else
+            subtreeSize(tot, len_prefix, lower_bound);
+        mpz_add(_state.remaining_space_size, _state.remaining_space_size, tot);
+        mpz_clear(tot);
+    }
+    inline void removeQueueElement(unsigned int len_prefix, double lower_bound, bool approx) override {
+        mpz_t tot;
+        mpz_init(tot);
+        if (approx)
+            approxRemainingSize(tot, len_prefix);
+        else
+            subtreeSize(tot, len_prefix, lower_bound);
+        mpz_sub(_state.remaining_space_size, _state.remaining_space_size, tot);
+        mpz_clear(tot);
+    }
+    inline void initRemainingSpaceSize() override {
+        // Proposition 2 (upper bound on total number of prefix evaluations)
+        size_t naive_max_length = 0.5 / _c;
+        if (naive_max_length < _nrules)
+            mpz_fac_ui(_state.remaining_space_size, naive_max_length);
+        else
+            mpz_fac_ui(_state.remaining_space_size, _nrules);
+    }
+    inline void clearRemainingSpaceSize() override {
+        mpz_set_ui(_state.remaining_space_size, 0);
+    }
+    inline size_t getLogRemainingSpaceSize() override {
+        // This is approximate.
+        return mpz_sizeinbase(_state.remaining_space_size, 10);
+    }
+#endif
 };
 
 extern NullLogger* logger;

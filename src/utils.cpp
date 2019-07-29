@@ -36,7 +36,7 @@ void Logger::setLogFileName(char *fname) {
        << "tree_num_nodes,tree_num_evaluated,tree_memory,"
        << "queue_size,queue_min_length,queue_memory,"
        << "pmap_size,pmap_null_num,pmap_discard_num,"
-       << "prefix_lengths" << endl;
+       << "log_remaining_space_size,prefix_lengths" << endl;
 }
 
 /*
@@ -45,6 +45,12 @@ void Logger::setLogFileName(char *fname) {
 void Logger::dumpState() {
     // update timestamp here
     setTotalTime(time_diff(_state.initial_time));
+
+    size_t space_size = 0;
+
+#ifdef GMP
+    space_size = getLogRemainingSpaceSize();
+#endif
 
     _f << _state.total_time << ","
        << _state.evaluate_children_time << ","
@@ -73,8 +79,23 @@ void Logger::dumpState() {
        << _state.pmap_size << ","
        << _state.pmap_null_num << ","
        << _state.pmap_discard_num << ","
+       << space_size << ","
        << dumpPrefixLens().c_str() << endl;
 }
+
+#ifdef GMP
+/*	
+ * Uses GMP library to dump a string version of the remaining state space size.	
+ * This number is typically very large (e.g. 10^20) which is why we use GMP instead of a long.	
+ * Note: this function may not work on some Linux machines.	
+ */	
+std::string Logger::dumpRemainingSpaceSize() {	
+    char* str = mpz_get_str(NULL, 10, _state.remaining_space_size);	
+    std::string ret(str);	
+    free(str);	
+    return ret;	
+}
+#endif
 
 /*
  * Function to convert vector of remaining prefix lengths to a string format for logging.
