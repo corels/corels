@@ -83,7 +83,7 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
         v = 1;
 
     if(!logger) {
-        if(v)
+        if(log_fname)
             logger = new Logger(c, nrules, v, log_fname, freq);
         else {
             logger = new PyLogger();

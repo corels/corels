@@ -6,7 +6,12 @@
 #include <fstream>
 #include <vector>
 #include <set>
-#include <chrono>
+
+#ifdef _WIN32
+#include <sysinfoapi.h>
+#else
+#include <sys/time.h>
+#endif
 
 #include "rule.hh"
 
@@ -416,9 +421,14 @@ class Logger : public NullLogger {
 extern NullLogger* logger;
 
 inline double timestamp() {
-    std::chrono::duration<double> duration = std::chrono::steady_clock::now().time_since_epoch();
+#ifdef _WIN32
+    return 0.001 * (double)GetTickCount();
+#else
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
 
-    return duration.count();
+    return (double)tv.tv_sec + 0.000001 * (double)tv.tv_usec;
+#endif
 }
 
 inline double time_diff(double t0) {
