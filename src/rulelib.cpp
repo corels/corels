@@ -133,7 +133,7 @@ rules_init(const char *infile, int *nrules,
     if(line)
         free(line);
 	/* All done! */
-	fclose(fi);
+    fclose(fi);
 
 	/* Now create the 0'th (default) rule. */
 	if (add_default_rule) {
