@@ -84,16 +84,16 @@ void Logger::dumpState() {
 }
 
 #ifdef GMP
-/*	
- * Uses GMP library to dump a string version of the remaining state space size.	
- * This number is typically very large (e.g. 10^20) which is why we use GMP instead of a long.	
- * Note: this function may not work on some Linux machines.	
- */	
-std::string Logger::dumpRemainingSpaceSize() {	
-    char* str = mpz_get_str(NULL, 10, _state.remaining_space_size);	
-    std::string ret(str);	
-    free(str);	
-    return ret;	
+/*
+ * Uses GMP library to dump a string version of the remaining state space size.
+ * This number is typically very large (e.g. 10^20) which is why we use GMP instead of a long.
+ * Note: this function may not work on some Linux machines.
+ */
+std::string Logger::dumpRemainingSpaceSize() {
+    char* str = mpz_get_str(NULL, 10, _state.remaining_space_size);
+    std::string ret(str);
+    free(str);
+    return ret;
 }
 #endif
 
@@ -111,6 +111,88 @@ std::string Logger::dumpPrefixLens() {
         }
     }
     return s;
+}
+
+// Custom getline for Windows support
+signed long long m_getline(char** lineptr, size_t* n, FILE* stream)
+{
+    if(lineptr == NULL || n == NULL || *lineptr != NULL || *n != 0)
+        return -1;
+
+    size_t block_size = 1024;
+    size_t nblocks = 1;
+
+    char* line = (char*)malloc(nblocks * block_size + 1);
+    if(!line)
+        return -1;
+    line[0] = '\0';
+
+    size_t total_size = 0;
+
+    int c;
+    while((c = fgetc(stream)) != EOF) {
+        if(++total_size > nblocks * block_size) {
+            line = (char*)realloc(line, ++nblocks * block_size + 1);
+            if(!line)
+                return -1;
+        }
+
+        line[total_size - 1] = c;
+        if(c == '\n' || c == '\r') {
+            break;
+        }
+    }
+    line[total_size] = '\0';
+
+    *n = nblocks * block_size + 1;
+    *lineptr = line;
+
+    if(total_size)
+        return total_size;
+    else
+        return -1;
+}
+
+// Custom strsep for Windows support
+char* m_strsep(char** stringp, char delim)
+{
+    if(stringp == NULL) {
+        return NULL;
+    }
+
+    char* str = *stringp;
+    if(str == NULL || *str == '\0') {
+        return NULL;
+    }
+
+    char* out = NULL;
+
+    while(1) {
+        if(*str == delim || *str == '\0') {
+            out = *stringp;
+	        *stringp = (*str == '\0') ? NULL : str + 1;
+            *str = '\0';
+            break;
+	    }
+	    str++;
+    }
+
+    return out;
+}
+
+// Custom strdup for Windows support
+char* m_strdup(char* str)
+{
+    if(!str)
+        return NULL;
+
+    size_t len = strlen(str);
+    char* buf = (char*)malloc(len + 1);
+    if(!buf)
+        return NULL;
+
+    memcpy(buf, str, len + 1);
+    return buf;
 }
 
 /*

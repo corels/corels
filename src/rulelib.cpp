@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Hongyu Yang, Cynthia Rudin, Margo Seltzer, and
  * The President and Fellows of Harvard College
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -28,10 +28,9 @@
 #include <string.h>
 #include <stdint.h>
 #include "rule.hh"
-
+#include "utils.hh"
 
 /* Function declarations. */
-int make_default(VECTOR *, int);
 #define RULE_INC 100
 
 /* One-counting tools */
@@ -56,7 +55,6 @@ int byte_ones[] = {
 /* 240 */ 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8 };
 
 #define BYTE_MASK	0xFF
-
 
 /*
  * Preprocessing step.
@@ -89,7 +87,7 @@ rules_init(const char *infile, int *nrules,
 	 * the end.
 	 */
 	rule_cnt = add_default_rule != 0 ? 1 : 0;
-	while (getline(&line, &len, fi) != -1) {
+	while (m_getline(&line, &len, fi) != -1) {
         char* line_cpy = line;
 		if (rule_cnt >= rsize) {
 			rsize += RULE_INC;
@@ -99,13 +97,13 @@ rules_init(const char *infile, int *nrules,
 		}
 
 		/* Get the rule string; line will contain the bits. */
-		if ((rulestr = strsep(&line_cpy, " ")) == NULL)
+		if ((rulestr = m_strsep(&line_cpy, ' ')) == NULL)
 			goto err;
 
 		rulelen = strlen(rulestr) + 1;
 		len -= rulelen;
 
-		if ((rules[rule_cnt].features = strdup(rulestr)) == NULL)
+		if ((rules[rule_cnt].features = m_strdup(rulestr)) == NULL)
 			goto err;
 
 		/*
@@ -130,8 +128,10 @@ rules_init(const char *infile, int *nrules,
 		rule_cnt++;
         free(line);
         line = NULL;
+        len = 0;
 	}
-    free(line);
+    if(line)
+        free(line);
 	/* All done! */
 	fclose(fi);
 
@@ -251,7 +251,7 @@ ascii_to_vector(char *line, size_t len, int *nsamples, int *nones, VECTOR *ret)
 	}
 	if ((s = mpz_sizeinbase (*ret, 2)) > (size_t) *nsamples)
 		*nsamples = (int) s;
-		
+
 	*nones = mpz_popcount(*ret);
 	return (0);
 #else
@@ -976,7 +976,7 @@ rule_set(VECTOR v, int e, int val, int n) {
     }
 */
     if(val)
-        v[e / BITS_PER_ENTRY] |= (one << shift); 
+        v[e / BITS_PER_ENTRY] |= (one << shift);
     else
 	    v[e/BITS_PER_ENTRY] &= ((v_entry) -1) - (one << shift);
 #endif

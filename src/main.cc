@@ -7,6 +7,10 @@
 
 #define BUFSZ 512
 
+#ifndef _WIN32
+#define _snprintf snprintf
+#endif
+
 int main(int argc, char *argv[]) {
     const char usage[] = "USAGE: %s [-b] "
         "[-n max_num_nodes] [-r regularization] [-v (rule|label|minor|samples|progress|loud|silent)] "
@@ -35,7 +39,7 @@ int main(int argc, char *argv[]) {
     int freq = 1000;
     int ablation = 0;
     bool calculate_size = false;
-    char verbstr[BUFSZ]; 
+    char verbstr[BUFSZ];
     verbstr[0] = '\0';
     /* only parsing happens here */
     while ((ch = getopt(argc, argv, "bsLc:p:v:n:r:f:a:u:")) != -1) {
@@ -84,49 +88,49 @@ int main(int argc, char *argv[]) {
             break;
         default:
             error = true;
-            snprintf(error_txt, BUFSZ, "unknown option: %c", ch);
+            _snprintf(error_txt, BUFSZ, "unknown option: %c", ch);
         }
     }
     if (max_num_nodes < 0) {
         error = true;
-        snprintf(error_txt, BUFSZ, "number of nodes must be positive");
+        _snprintf(error_txt, BUFSZ, "number of nodes must be positive");
     }
     if (c < 0) {
         error = true;
-        snprintf(error_txt, BUFSZ, "regularization constant must be postitive");
+        _snprintf(error_txt, BUFSZ, "regularization constant must be postitive");
     }
     if (map_type > 2 || map_type < 0) {
         error = true;
-        snprintf(error_txt, BUFSZ, "symmetry-aware map must be (0|1|2)");
+        _snprintf(error_txt, BUFSZ, "symmetry-aware map must be (0|1|2)");
     }
     if ((run_bfs + run_curiosity) != 1) {
         error = true;
-        snprintf(error_txt, BUFSZ,
+        _snprintf(error_txt, BUFSZ,
                 "you must use exactly one of (-b | -c)");
     }
     if (argc < 2 + optind) {
         error = true;
-        snprintf(error_txt, BUFSZ,
+        _snprintf(error_txt, BUFSZ,
                 "you must specify data files for rules and labels");
     }
     if (run_curiosity && !((curiosity_policy >= 1) && (curiosity_policy <= 4))) {
         error = true;
-        snprintf(error_txt, BUFSZ,
+        _snprintf(error_txt, BUFSZ,
                 "you must specify a curiosity type (1|2|3|4)");
     }
     if (verr) {
         error = true;
-        snprintf(error_txt, BUFSZ,
+        _snprintf(error_txt, BUFSZ,
                  "verbosity options must be one or more of (rule|label|samples|progress|loud|silent), separated with commas (i.e. -v progress,samples)");
     }
     else {
         if (verbosity.count("samples") && !(verbosity.count("rule") || verbosity.count("label") || verbosity.count("minor") || verbosity.count("loud"))) {
             error = true;
-            snprintf(error_txt, BUFSZ,
+            _snprintf(error_txt, BUFSZ,
                      "verbosity 'samples' option must be combined with at least one of (rule|label|minor|samples|progress|loud|silent)");
         }
         if (verbosity.size() > 1 && verbosity.count("silent")) {
-            snprintf(error_txt, BUFSZ,
+            _snprintf(error_txt, BUFSZ,
                      "verbosity 'silent' option must be passed without any additional verbosity parameters");
         }
     }
@@ -145,7 +149,7 @@ int main(int argc, char *argv[]) {
         verbosity.clear();
         verbstr[0] = '\0';
     }
-    
+
     std::map<int, std::string> curiosity_map;
     curiosity_map[1] = "curiosity";
     curiosity_map[2] = "curious_lb";
@@ -157,25 +161,25 @@ int main(int argc, char *argv[]) {
 
     int nrules, nsamples, nlabels, nsamples_chk;
     rule_t *rules, *labels;
-    
+
     if(rules_init(argv[0], &nrules, &nsamples, &rules, 1) != 0) {
         fprintf(stderr, "Failed to load out file from path: %s\n", argv[0]);
         return 1;
     }
-    
+
     if(rules_init(argv[1], &nlabels, &nsamples_chk, &labels, 0) != 0) {
         fprintf(stderr, "Failed to load label file from path: %s\n", argv[1]);
         rules_free(rules, nrules, 1);
         return 1;
     }
-    
+
     if(nlabels != 2) {
-        fprintf(stderr, "nlabels must be equal to 2\n");
+        fprintf(stderr, "nlabels must be equal to 2, got %d\n", nlabels);
         rules_free(rules, nrules, 1);
         rules_free(labels, nlabels, 0);
         return 1;
     }
-    
+
     if(nsamples_chk != nsamples) {
         fprintf(stderr, "nsamples mismatch between out file (%d) and label file (%d)\n", nsamples, nsamples_chk);
         rules_free(rules, nrules, 1);
@@ -201,12 +205,12 @@ int main(int argc, char *argv[]) {
     }
     else
         meta = NULL;
-    
+
     char froot[BUFSZ];
     char log_fname[BUFSZ];
     char opt_fname[BUFSZ];
     const char* pch = strrchr(argv[0], '/');
-    snprintf(froot, BUFSZ, "../logs/for-%s-%s%s-%s-%s-removed=%s-max_num_nodes=%d-c=%.7f-v=%s-f=%d",
+    _snprintf(froot, BUFSZ, "../logs/for-%s-%s%s-%s-%s-removed=%s-max_num_nodes=%d-c=%.7f-v=%s-f=%d",
             pch ? pch + 1 : "",
             run_bfs ? "bfs" : "",
             run_curiosity ? curiosity_map[curiosity_policy].c_str() : "",
@@ -215,8 +219,8 @@ int main(int argc, char *argv[]) {
             meta ? "minor" : "no_minor",
             ablation ? ((ablation == 1) ? "support" : "lookahead") : "none",
             max_num_nodes, c, verbstr, freq);
-    snprintf(log_fname, BUFSZ, "%s.txt", froot);
-    snprintf(opt_fname, BUFSZ, "%s-opt.txt", froot);
+    _snprintf(log_fname, BUFSZ, "%s.txt", froot);
+    _snprintf(opt_fname, BUFSZ, "%s-opt.txt", froot);
 
     int ret = 0;
 
@@ -228,7 +232,7 @@ int main(int argc, char *argv[]) {
         int* rulelist = NULL;
         int rulelist_size = 0;
         int* classes = NULL;
-    
+
         run_corels_end(&rulelist, &rulelist_size, &classes, 0, latex_out, rules, labels, &opt_fname[0]);
 
         if(rulelist)
@@ -240,12 +244,12 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Setup failed!\n");
         ret = 2;
     }
-    
+
     if(meta) {
         rules_free(meta, nmeta, 0);
     }
     rules_free(rules, nrules, 1);
     rules_free(labels, nlabels, 0);
-        
+
     return ret;
 }

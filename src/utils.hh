@@ -10,8 +10,6 @@
 
 #include "rule.hh"
 
-
-
 using namespace std;
 
 enum class DataStruct { Tree, Queue, Pmap};
@@ -426,6 +424,11 @@ inline double timestamp() {
 inline double time_diff(double t0) {
     return timestamp() - t0;
 }
+
+// Helper Functions
+signed long long m_getline(char** lineptr, size_t* n, FILE* stream);
+char* m_strsep(char** stringp, char delim);
+char* m_strdup(char* str);
 
 #include "alloc.hh"
 /*

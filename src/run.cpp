@@ -14,46 +14,16 @@ static Queue* g_queue = nullptr;
 static double g_init = 0.0;
 static std::set<std::string> g_verbosity;
 
-char* m_strsep(char** stringp, char delim)
-{
-    if(stringp == NULL) {
-        return NULL;
-    }
-    
-    char* str = *stringp;
-    if(str == NULL || *str == '\0') {
-        return NULL;
-    }
-
-    char* out = NULL;
-
-    while(1) {
-        if(*str == delim || *str == '\0') {
-            out = *stringp;
-	        *stringp = (*str == '\0') ? NULL : str + 1;
-            *str = '\0';
-            break;
-	    }
-	    str++;
-    }
-
-    return out;
-}
-
-#ifndef _WIN32
-#define _strdup strdup
-#endif
-
 int run_corels_begin(double c, char* vstring, int curiosity_policy,
                   int map_type, int ablation, int calculate_size, int nrules, int nlabels,
-                  int nsamples, rule_t* rules, rule_t* labels, rule_t* meta, int freq, char* log_fname) 
+                  int nsamples, rule_t* rules, rule_t* labels, rule_t* meta, int freq, char* log_fname)
 {
     g_verbosity.clear();
 
     const char *voptions = "rule|label|minor|samples|progress|loud";
 
     char *vopt = NULL;
-    char *vcopy = _strdup(vstring);
+    char *vcopy = m_strdup(vstring);
     char *vcopy_begin = vcopy;
     while ((vopt = m_strsep(&vcopy, ',')) != NULL) {
         if (!strstr(voptions, vopt)) {
@@ -87,13 +57,13 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
         rule_print_all(labels, nlabels, nsamples, g_verbosity.count("samples"));
         printf("\n\n");
     }
-    
+
     if (g_verbosity.count("minor") && meta) {
         printf("Minority bound for %d samples\n\n", nsamples);
         rule_print_all(meta, 1, nsamples, g_verbosity.count("samples"));
         printf("\n\n");
     }
-    
+
     if (g_tree)
         delete g_tree;
     g_tree = nullptr;
@@ -105,13 +75,13 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
     if (g_pmap)
         delete g_pmap;
     g_pmap = nullptr;
-    
+
     int v = 0;
     if (g_verbosity.count("loud"))
         v = 1000;
     else if (g_verbosity.count("progress"))
         v = 1;
-   
+
     if(!logger) {
         if(v)
             logger = new Logger(c, nrules, v, log_fname, freq);
@@ -213,10 +183,10 @@ double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int ear
     if(g_pmap)
         delete g_pmap;
     g_pmap = nullptr;
-    
+
     if(g_queue)
         delete g_queue;
     g_queue = nullptr;
-   
+
     return accuracy;
 }
