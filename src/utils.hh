@@ -176,7 +176,7 @@ class PyLogger : public NullLogger {
     inline void setVerbosity(int verbosity) override {
         _v = verbosity;
     }
-    inline int getVerbosity() { return _v; }
+    inline int getVerbosity() override { return _v; }
 };
 
 class Logger : public NullLogger {
