@@ -8,7 +8,7 @@
 #include <set>
 
 #ifdef _WIN32
-#include <sysinfoapi.h>
+#include <windows.h>
 #else
 #include <sys/time.h>
 #endif
