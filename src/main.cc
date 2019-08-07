@@ -233,24 +233,24 @@ int main(int argc, char *argv[]) {
 
     int ret = 0;
 
-    PermutationMap* g_pmap = NULL;
-    CacheTree* g_tree = NULL;
-    Queue* g_queue = NULL;
-    double g_init = 0.0;
-    std::set<std::string> g_verbosity;
+    PermutationMap* pmap = NULL;
+    CacheTree* tree = NULL;
+    Queue* queue = NULL;
+    double init = 0.0;
+    std::set<std::string> run_verbosity;
 
     if(run_corels_begin(c, &verbstr[0], curiosity_policy, map_type, ablation, calculate_size,
                         nrules, nlabels, nsamples, rules, labels, meta, freq, &log_fname[0],
-                        g_pmap, g_tree, g_queue, g_init, g_verbosity) == 0)
+                        pmap, tree, queue, init, run_verbosity) == 0)
     {
-        while(run_corels_loop(max_num_nodes, g_pmap, g_tree, g_queue) == 0) { }
+        while(run_corels_loop(max_num_nodes, pmap, tree, queue) == 0) { }
 
         int* rulelist = NULL;
         int rulelist_size = 0;
         int* classes = NULL;
 
         run_corels_end(&rulelist, &rulelist_size, &classes, 0, latex_out, rules, labels, &opt_fname[0],
-                        g_pmap, g_tree, g_queue, g_init, g_verbosity);
+                        pmap, tree, queue, init, verbosity);
 
         if(rulelist)
             free(rulelist);
