@@ -905,10 +905,6 @@ rule_vector_print(VECTOR v, int nsamples)
     fputs(str, stdout);
 	fputc('\n', stdout);
 #else
-	/*for (int i = 0; i < n; i++)
-		printf("0x%lx ", v[i]);
-	printf("\n");*/
-
     v_entry m = ~(((v_entry) -1) >> 1);
     unsigned n = (nsamples + BITS_PER_ENTRY - 1) / BITS_PER_ENTRY;
     for(unsigned i = 0; i < n; i++) {
@@ -959,7 +955,7 @@ void
 rule_set(VECTOR v, int e, int val, int n) {
 #ifdef GMP
     if(val)
-	    mpz_setbit(v, e);
+        mpz_setbit(v, e);
     else
         mpz_clrbit(v, e);
 #else
