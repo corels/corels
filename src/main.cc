@@ -11,6 +11,10 @@
 #define _snprintf snprintf
 #endif
 
+bool parse_verbosity(char* str) {
+
+}
+
 int main(int argc, char *argv[]) {
     const char usage[] = "USAGE: %s [-b] "
         "[-n max_num_nodes] [-r regularization] [-v (rule|label|minor|samples|progress|loud|silent)] "
