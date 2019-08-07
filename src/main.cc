@@ -6,18 +6,34 @@
 #include "run.hh"
 
 #define BUFSZ 512
+#define VERBSTR "rule|label|minor|samples|progress|loud|silent"
 
 #ifndef _WIN32
 #define _snprintf snprintf
 #endif
 
-bool parse_verbosity(char* str) {
+// Returns true on success
+bool parse_verbosity(char* str, char* verbstr, std::set<std::string>* verbosity) {
+    char *vopt, *verb_trim;
+    const char *vstr = VERBSTR;
+    
+    verb_trim = strtok(str, " ");
+    strcpy(verbstr, verb_trim);
+    vopt = strtok(verb_trim, ",");
+    while (vopt != NULL) {
+        if (!strstr(vstr, vopt)) {
+            return false;
+        }
+        verbosity->insert(vopt);
+        vopt = strtok(NULL, ",");
+    }
 
+    return true;
 }
 
 int main(int argc, char *argv[]) {
     const char usage[] = "USAGE: %s [-b] "
-        "[-n max_num_nodes] [-r regularization] [-v (rule|label|minor|samples|progress|loud|silent)] "
+        "[-n max_num_nodes] [-r regularization] [-v (%s)] "
         "-c (1|2|3|4) -p (0|1|2) [-f logging_frequency] "
         "-a (0|1|2) [-s] [-L latex_out]"
         "data.out data.label [data.minor]\n\n"
@@ -30,10 +46,8 @@ int main(int argc, char *argv[]) {
     bool latex_out = false;
     bool use_prefix_perm_map = false;
     bool use_captured_sym_map = false;
-    char *vopt, *verb_trim;
     std::set<std::string> verbosity;
     bool verr = false;
-    const char *vstr = "rule|label|minor|samples|progress|loud|silent";
     int map_type = 0;
     int max_num_nodes = 100000;
     double c = 0.01;
@@ -67,16 +81,7 @@ int main(int argc, char *argv[]) {
             use_captured_sym_map = map_type == 2;
             break;
         case 'v':
-            verb_trim = strtok(optarg, " ");
-            strcpy(verbstr, verb_trim);
-            vopt = strtok(verb_trim, ",");
-            while (vopt != NULL) {
-                if (!strstr(vstr, vopt)) {
-                    verr = true;
-                }
-                verbosity.insert(vopt);
-                vopt = strtok(NULL, ",");
-            }
+            verr = !parse_verbosity(optarg, &verbstr[0], &verbosity);
             break;
         case 'n':
             max_num_nodes = atoi(optarg);
@@ -125,7 +130,7 @@ int main(int argc, char *argv[]) {
     if (verr) {
         error = true;
         _snprintf(error_txt, BUFSZ,
-                 "verbosity options must be one or more of (rule|label|samples|progress|loud|silent), separated with commas (i.e. -v progress,samples)");
+                 "verbosity options must be one or more of (%s), separated with commas (i.e. -v progress,samples)", VERBSTR);
     }
     else {
         if (verbosity.count("samples") && !(verbosity.count("rule") || verbosity.count("label") || verbosity.count("minor") || verbosity.count("loud"))) {
@@ -140,7 +145,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (error) {
-        fprintf(stderr, usage, argv[0], error_txt);
+        fprintf(stderr, usage, argv[0], VERBSTR, error_txt);
         return 1;
     }
 
