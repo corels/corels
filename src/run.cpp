@@ -8,15 +8,12 @@
 #define BUFSZ 512
 
 NullLogger* logger = nullptr;
-static PermutationMap* g_pmap = nullptr;
-static CacheTree* g_tree = nullptr;
-static Queue* g_queue = nullptr;
-static double g_init = 0.0;
-static std::set<std::string> g_verbosity;
 
 int run_corels_begin(double c, char* vstring, int curiosity_policy,
                   int map_type, int ablation, int calculate_size, int nrules, int nlabels,
-                  int nsamples, rule_t* rules, rule_t* labels, rule_t* meta, int freq, char* log_fname)
+                  int nsamples, rule_t* rules, rule_t* labels, rule_t* meta, int freq, char* log_fname,
+                  PermutationMap*& g_pmap, CacheTree*& g_tree, Queue*& g_queue, double& g_init,
+                  std::set<std::string>& g_verbosity)
 {
     g_verbosity.clear();
 
@@ -136,7 +133,8 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
     return 0;
 }
 
-int run_corels_loop(size_t max_num_nodes) {
+int run_corels_loop(size_t max_num_nodes, PermutationMap* g_pmap, CacheTree* g_tree, Queue* g_queue)
+{
     if((g_tree->num_nodes() < max_num_nodes) && !g_queue->empty()) {
         bbound_loop(g_tree, g_queue, g_pmap);
         return 0;
@@ -144,7 +142,9 @@ int run_corels_loop(size_t max_num_nodes) {
     return -1;
 }
 
-double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int early, int latex_out, rule_t* rules, rule_t* labels, char* opt_fname)
+double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int early, int latex_out, rule_t* rules,
+                      rule_t* labels, char* opt_fname, PermutationMap*& g_pmap, CacheTree*& g_tree, Queue*& g_queue,
+                      double g_init, std::set<std::string>& g_verbosity)
 {
     bbound_end(g_tree, g_queue, g_pmap, early);
 
@@ -175,18 +175,18 @@ double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int ear
         logger->dumpState();
         logger->closeFile();
     }
-
-    if(g_tree)
+    
+    if (g_tree)
         delete g_tree;
     g_tree = nullptr;
 
-    if(g_pmap)
-        delete g_pmap;
-    g_pmap = nullptr;
-
-    if(g_queue)
+    if (g_queue)
         delete g_queue;
     g_queue = nullptr;
+
+    if (g_pmap)
+        delete g_pmap;
+    g_pmap = nullptr;
 
     return accuracy;
 }
