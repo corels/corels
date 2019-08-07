@@ -880,17 +880,17 @@ ruleset_entry_print(ruleset_entry_t *re, int nsamples, int detail)
 void
 rule_print(rule_t *rules, int ndx, int nsamples, int detail)
 {
-	rule_t *r;
+    rule_t *r;
 
-	r = rules + ndx;
-	printf("RULE %d: ( %s ), support=%d, card=%d",
-	    ndx, r->features, r->support, r->cardinality);
-	if (detail) {
+    r = rules + ndx;
+    printf("RULE %d: ( %s ), support=%d, card=%d",
+        ndx, r->features, r->support, r->cardinality);
+    if (detail) {
         printf(":");
-		rule_vector_print(r->truthtable, nsamples);
+        rule_vector_print(r->truthtable, nsamples);
     }
     else
-	    printf("\n");
+        printf("\n");
 }
 
 void
