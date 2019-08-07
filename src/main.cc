@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
     argc -= optind;
     argv += optind;
 
-    int nrules, nsamples, nlabels, nsamples_chk;
+    int nrules, nsamples, nlabels, nsamples_label;
     rule_t *rules, *labels;
 
     if(rules_init(argv[0], &nrules, &nsamples, &rules, 1) != 0) {
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if(rules_init(argv[1], &nlabels, &nsamples_chk, &labels, 0) != 0) {
+    if(rules_init(argv[1], &nlabels, &nsamples_label, &labels, 0) != 0) {
         fprintf(stderr, "Failed to load label file from path: %s\n", argv[1]);
         rules_free(rules, nrules, 1);
         return 1;
@@ -189,24 +189,24 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if(nsamples_chk != nsamples) {
-        fprintf(stderr, "nsamples mismatch between out file (%d) and label file (%d)\n", nsamples, nsamples_chk);
+    if(nsamples_label != nsamples) {
+        fprintf(stderr, "nsamples mismatch between out file (%d) and label file (%d)\n", nsamples, nsamples_label);
         rules_free(rules, nrules, 1);
         rules_free(labels, nlabels, 0);
         return 1;
     }
 
-    int nmeta, nsamples_check;
+    int nmeta, nsamples_meta;
     // Equivalent points information is precomputed, read in from file, and stored in meta
     rule_t *meta;
     if (argc == 3) {
-        if(rules_init(argv[2], &nmeta, &nsamples_check, &meta, 0) != 0) {
+        if(rules_init(argv[2], &nmeta, &nsamples_meta, &meta, 0) != 0) {
             fprintf(stderr, "Failed to load minor file from path: %s, skipping...\n", argv[2]);
             meta = NULL;
             nmeta = 0;
         }
-        else if(nsamples_check != nsamples) {
-            fprintf(stderr, "nsamples mismatch between out file (%d) and minor file (%d), skipping minor file...\n", nsamples, nsamples_check);
+        else if(nsamples_meta != nsamples) {
+            fprintf(stderr, "nsamples mismatch between out file (%d) and minor file (%d), skipping minor file...\n", nsamples, nsamples_meta);
             rules_free(meta, nmeta, 0);
             meta = NULL;
             nmeta = 0;
