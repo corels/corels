@@ -87,9 +87,9 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
             logger = new Logger(c, nrules, v, log_fname, freq);
         else {
             logger = new PyLogger();
-            logger->setVerbosity(v);
         }
     }
+    logger->setVerbosity(v);
 
     g_init = timestamp();
     char run_type[BUFSZ];
