@@ -2,6 +2,7 @@
 #define RUN_H
 
 #include "rule.hh"
+#include "queue.hh"
 
 int run_corels_begin(double c, char* vstring, int curiosity_policy,
                   int map_type, int ablation, int calculate_size, int nrules, int nlabels,
