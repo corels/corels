@@ -164,7 +164,6 @@ void rule_vor(VECTOR, VECTOR, VECTOR, int, int *);
 void rule_not(VECTOR, VECTOR, int, int *);
 int count_ones(v_entry);
 int count_ones_vector(VECTOR, int);
-int rule_vector_equal(const VECTOR, const VECTOR, int, int);
 int rule_vector_cmp(const VECTOR, const VECTOR, int, int);
 size_t rule_vector_hash(const VECTOR, short);
 
