@@ -257,44 +257,47 @@ int bbound_end(CacheTree* tree, Queue* q, PermutationMap* p, bool early) {
         f << "lower_bound objective length frac_captured rule_list\n";
     }
 
-    // Clean up data structures
-    if (verbosity >= 1) {
-        printf("Deleting queue elements and corresponding nodes in the cache,"
-            "since they may not be reachable by the tree's destructor\n");
-        printf("\nminimum objective: %1.10f\n", tree->min_objective());
-    }
-    Node* node;
-    double min_lower_bound = 1.0;
-    double lb;
-    size_t num = 0;
-    while (!q->empty()) {
-        node = q->front();
-        q->pop();
-        if (node->deleted()) {
-            tree->decrement_num_nodes();
-            logger->removeFromMemory(sizeof(*node), DataStruct::Tree);
-            delete node;
-        } else {
-            lb = node->lower_bound() + tree->c();
-            if (lb < min_lower_bound)
-                min_lower_bound = lb;
-            if (print_queue) {
-                std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> > pp_pair = node->get_prefix_and_predictions();
-                tracking_vector<unsigned short, DataStruct::Tree> prefix = std::move(pp_pair.first);
-                tracking_vector<bool, DataStruct::Tree> predictions = std::move(pp_pair.second);
-                f << node->lower_bound() << " " << node->objective() << " " << node->depth() << " "
-                  << (double) node->num_captured() / (double) tree->nsamples() << " ";
-                for(size_t i = 0; i < prefix.size(); ++i) {
-                    f << tree->rule_features(prefix[i]) << "~"
-                      << predictions[i] << ";";
+    // Exiting early skips cleanup
+    if(!early) {
+        // Clean up data structures
+        if (verbosity >= 1) {
+            printf("Deleting queue elements and corresponding nodes in the cache,"
+                "since they may not be reachable by the tree's destructor\n");
+            printf("\nminimum objective: %1.10f\n", tree->min_objective());
+        }
+        Node* node;
+        double min_lower_bound = 1.0;
+        double lb;
+        size_t num = 0;
+        while (!q->empty()) {
+            node = q->front();
+            q->pop();
+            if (node->deleted()) {
+                tree->decrement_num_nodes();
+                logger->removeFromMemory(sizeof(*node), DataStruct::Tree);
+                delete node;
+            } else {
+                lb = node->lower_bound() + tree->c();
+                if (lb < min_lower_bound)
+                    min_lower_bound = lb;
+                if (print_queue) {
+                    std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> > pp_pair = node->get_prefix_and_predictions();
+                    tracking_vector<unsigned short, DataStruct::Tree> prefix = std::move(pp_pair.first);
+                    tracking_vector<bool, DataStruct::Tree> predictions = std::move(pp_pair.second);
+                    f << node->lower_bound() << " " << node->objective() << " " << node->depth() << " "
+                      << (double) node->num_captured() / (double) tree->nsamples() << " ";
+                    for(size_t i = 0; i < prefix.size(); ++i) {
+                        f << tree->rule_features(prefix[i]) << "~"
+                          << predictions[i] << ";";
+                    }
+                    f << "default~" << predictions.back() << "\n";
+                    num++;
                 }
-                f << "default~" << predictions.back() << "\n";
-                num++;
             }
         }
+        if (verbosity >= 1)
+            printf("minimum lower bound in queue: %1.10f\n\n", min_lower_bound);
     }
-    if (verbosity >= 1)
-        printf("minimum lower bound in queue: %1.10f\n\n", min_lower_bound);
     
     if (print_queue)
         f.close();

@@ -175,17 +175,19 @@ double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int ear
         logger->dumpState();
         logger->closeFile();
     }
-    
-    if (tree)
-        delete tree;
+
+    // Exiting early skips cleanup
+    if(!early) {    
+        if (tree)
+            delete tree;
+        if (queue)
+            delete queue;
+        if (pmap)
+            delete pmap;
+    }
+
     tree = nullptr;
-
-    if (queue)
-        delete queue;
     queue = nullptr;
-
-    if (pmap)
-        delete pmap;
     pmap = nullptr;
 
     return accuracy;
