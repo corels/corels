@@ -304,7 +304,10 @@ int bbound_end(CacheTree* tree, Queue* q, PermutationMap* p, bool early) {
     // last log record (before cache deleted)
     logger->dumpState();
 
-    rule_vfree(&captured);
-    rule_vfree(&not_captured);
+    if(!early) {
+        rule_vfree(&captured);
+        rule_vfree(&not_captured);
+    }
+    
     return num_iter;
 }
