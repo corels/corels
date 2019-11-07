@@ -136,20 +136,20 @@ int main(int argc, char *argv[]) {
     if (verbosity >= 10)
         print_machine_info();
     char froot[BUFSZ];
-    char log_fname[BUFSZ];
-    char opt_fname[BUFSZ];
+    char log_fname[BUFSZ+4];
+    char opt_fname[BUFSZ+8];
     const char* pch = strrchr(argv[0], '/');
     snprintf(froot, BUFSZ, "../logs/for-%s-%s%s-%s-%s-removed=%s-max_num_nodes=%d-c=%.7f-v=%d-f=%d",
             pch ? pch + 1 : "",
             run_bfs ? "bfs" : "",
             run_curiosity ? curiosity_map[curiosity_policy].c_str() : "",
-            use_prefix_perm_map ? "with_prefix_perm_map" : 
+            use_prefix_perm_map ? "with_prefix_perm_map" :
                 (use_captured_sym_map ? "with_captured_symmetry_map" : "no_pmap"),
             meta ? "minor" : "no_minor",
             ablation ? ((ablation == 1) ? "support" : "lookahead") : "none",
             max_num_nodes, c, verbosity, freq);
-    snprintf(log_fname, BUFSZ, "%s.txt", froot);
-    snprintf(opt_fname, BUFSZ, "%s-opt.txt", froot);
+    snprintf(log_fname, BUFSZ+4, "%s.txt", froot);
+    snprintf(opt_fname, BUFSZ+8, "%s-opt.txt", froot);
 
     if (verbosity >= 1000) {
         printf("\n%d rules %d samples\n\n", nrules, nsamples);
