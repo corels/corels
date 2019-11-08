@@ -61,18 +61,6 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
         printf("\n\n");
     }
 
-    if (tree)
-        delete tree;
-    tree = nullptr;
-
-    if (queue)
-        delete queue;
-    queue = nullptr;
-
-    if (pmap)
-        delete pmap;
-    pmap = nullptr;
-
     int v = 0;
     if (verbosity.count("loud"))
         v = 1000;
