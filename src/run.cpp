@@ -152,7 +152,7 @@ double run_corels_end(std::vector<int>* rulelist, std::vector<int>* classes, int
     const tracking_vector<bool, DataStruct::Tree>& preds = tree->opt_predictions();
 
     double accuracy = 1.0 - tree->min_objective() + tree->c() * r_list.size();
-    
+
     for(size_t i = 0; i < r_list.size(); i++) {
         rulelist->push_back(r_list[i]);
         classes->push_back(preds[i]);
