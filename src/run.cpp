@@ -142,7 +142,7 @@ int run_corels_loop(size_t max_num_nodes, PermutationMap* pmap, CacheTree* tree,
     return -1;
 }
 
-double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int early, int latex_out, rule_t* rules,
+double run_corels_end(std::vector<int>& rulelist, std::vector<int>& classes, int early, int latex_out, rule_t* rules,
                       rule_t* labels, char* opt_fname, PermutationMap*& pmap, CacheTree*& tree, Queue*& queue,
                       double init, std::set<std::string>& verbosity)
 {
@@ -151,8 +151,15 @@ double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int ear
     const tracking_vector<unsigned short, DataStruct::Tree>& r_list = tree->opt_rulelist();
     const tracking_vector<bool, DataStruct::Tree>& preds = tree->opt_predictions();
 
-    double accuracy = 1.0 - tree->min_objective() + tree->c() * r_list.size();
+    rulelist.reserve(r_list.size());
+    classes.reserve(preds.size());
 
+    std::copy(r_list.begin(), r_list.end(), rulelist.begin());
+    std::copy(preds.begin(), preds.end(), classes.begin());
+
+    double accuracy = 1.0 - tree->min_objective() + tree->c() * rulelist.size();
+    
+    /*
     *rulelist = (int*)malloc(sizeof(int) * r_list.size());
     *classes = (int*)malloc(sizeof(int) * (1 + r_list.size()));
     *rulelist_size = r_list.size();
@@ -161,6 +168,7 @@ double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int ear
         (*classes)[i] = preds[i];
     }
     (*classes)[r_list.size()] = preds.back();
+    */
 
     if (verbosity.count("progress")) {
         printf("final num_nodes: %zu\n", tree->num_nodes());
@@ -171,7 +179,7 @@ double run_corels_end(int** rulelist, int* rulelist_size, int** classes, int ear
     }
 
     if(opt_fname) {
-        print_final_rulelist(r_list, tree->opt_predictions(), latex_out, rules, labels, opt_fname);
+        print_final_rulelist(r_list, preds, latex_out, rules, labels, opt_fname);
         logger->dumpState();
         logger->closeFile();
     }
