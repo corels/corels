@@ -20,14 +20,15 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
     const char *voptions = "rule|label|minor|samples|progress|loud";
 
     char *vopt = NULL;
-    char *vcopy = m_strdup(vstring);
+    char *vcopy = strdup(vstring);
     char *vcopy_begin = vcopy;
-    while ((vopt = m_strsep(&vcopy, ',')) != NULL) {
+    while ((vopt = strtok(vcopy, ",")) != NULL) {
         if (!strstr(voptions, vopt)) {
             fprintf(stderr, "verbosity options must be one or more of (%s)\n", voptions);
             return -1;
         }
         verbosity.insert(vopt);
+        vcopy = NULL;
     }
     free(vcopy_begin);
 

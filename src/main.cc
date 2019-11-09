@@ -245,18 +245,11 @@ int main(int argc, char *argv[]) {
     {
         while(run_corels_loop(max_num_nodes, pmap, tree, queue) == 0) { }
 
-        int* rulelist = NULL;
-        int rulelist_size = 0;
-        int* classes = NULL;
+        std::vector<int> rulelist;
+        std::vector<int> classes;
 
-        run_corels_end(&rulelist, &rulelist_size, &classes, 0, latex_out, rules, labels, &opt_fname[0],
+        run_corels_end(&rulelist, &classes, 0, latex_out, rules, labels, &opt_fname[0],
                         pmap, tree, queue, init, verbosity);
-
-        if(rulelist)
-            free(rulelist);
-
-        if(classes)
-            free(classes);
     } else {
         fprintf(stderr, "Setup failed!\n");
         ret = 2;

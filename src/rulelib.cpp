@@ -68,9 +68,9 @@ int
 rules_init(const char *infile, int *nrules,
     int *nsamples, rule_t **rules_ret, int add_default_rule)
 {
-	FILE *fi;
-	char *line = NULL;
-    char *rulestr;
+	std::ifstream fi(infile);
+  std::string line;
+    char *rulestr, *line_cpy = NULL;
 	int rule_cnt, sample_cnt, rsize;
 	int i, ones, ret;
 	rule_t *rules=NULL;
@@ -79,16 +79,17 @@ rules_init(const char *infile, int *nrules,
 
 	sample_cnt = rsize = 0;
 
-	if ((fi = fopen(infile, "r")) == NULL)
-        return (errno);
+	if (!fi.is_open())
+        return (1);
 
 	/*
 	 * Leave a space for the 0th (default) rule, which we'll add at
 	 * the end.
 	 */
 	rule_cnt = add_default_rule != 0 ? 1 : 0;
-	while (m_getline(&line, &len, fi) != -1) {
-        char* line_cpy = line;
+	while (std::getline(fi, line)) {
+    len = line.length();
+        line_cpy = strdup(line.c_str());
 		if (rule_cnt >= rsize) {
 			rsize += RULE_INC;
                 	rules = (rule_t*)realloc(rules, rsize * sizeof(rule_t));
@@ -97,13 +98,14 @@ rules_init(const char *infile, int *nrules,
 		}
 
 		/* Get the rule string; line will contain the bits. */
-		if ((rulestr = m_strsep(&line_cpy, ' ')) == NULL)
+		if ((rulestr = strtok(line_cpy, " ")) == NULL)
 			goto err;
 
 		rulelen = strlen(rulestr) + 1;
 		len -= rulelen;
+    char* line_data = &line_cpy[rulelen];
 
-		if ((rules[rule_cnt].features = m_strdup(rulestr)) == NULL)
+		if ((rules[rule_cnt].features = strdup(rulestr)) == NULL)
 			goto err;
 
 		/*
@@ -111,8 +113,8 @@ rules_init(const char *infile, int *nrules,
 		 * at line[len-1]; let's make it a NUL and shorten the line
 		 * length by one.
 		 */
-		line_cpy[len-1] = '\0';
-		if (ascii_to_vector(line_cpy, len, &sample_cnt, &ones,
+		line_data[len-1] = '\0';
+		if (ascii_to_vector(line_data, len, &sample_cnt, &ones,
 		    &rules[rule_cnt].truthtable) != 0) {
                 fprintf(stderr, "Loading rule '%s' failed\n", rulestr);
                 errno = 1;
@@ -126,14 +128,12 @@ rules_init(const char *infile, int *nrules,
 			if (*cp == ',')
 				rules[rule_cnt].cardinality++;
 		rule_cnt++;
-        free(line);
-        line = NULL;
-        len = 0;
+        line = "";
+    free(line_cpy);
+    line_cpy = NULL;
 	}
-    if(line)
-        free(line);
 	/* All done! */
-    fclose(fi);
+    fi.close();
 
 	/* Now create the 0'th (default) rule. */
 	if (add_default_rule) {
@@ -153,6 +153,9 @@ rules_init(const char *infile, int *nrules,
 err:
 	ret = errno;
 
+  if (line_cpy)
+    free(line_cpy);
+
 	/* Reclaim space. */
 	if (rules != NULL) {
 		for (i = 1; i < rule_cnt; i++) {
@@ -165,7 +168,7 @@ err:
 		}
 		free(rules);
 	}
-	(void)fclose(fi);
+  fi.close();
 	return (ret);
 }
 

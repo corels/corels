@@ -436,9 +436,9 @@ inline double time_diff(double t0) {
 }
 
 // Helper Functions
-signed long long m_getline(char** lineptr, size_t* n, FILE* stream);
-char* m_strsep(char** stringp, char delim);
-char* m_strdup(char* str);
+#ifdef _WIN32
+#define strdup _strdup
+#endif
 
 #include "alloc.hh"
 /*
