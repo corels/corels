@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <string>
+#include <string.h>
 #include "run.hh"
 
 #define BUFSZ 512

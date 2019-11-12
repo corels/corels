@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <set>
+#include <string.h>
 
 #include "queue.hh"
 #include "run.hh"
