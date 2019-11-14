@@ -69,14 +69,14 @@ int
 rules_init(const char *infile, int *nrules,
     int *nsamples, rule_t **rules_ret, int add_default_rule)
 {
-	std::ifstream fi(infile);
+  std::ifstream fi(infile);
   std::string line;
-    char *rulestr, *line_cpy = NULL;
+  char *rulestr, *line_cpy = NULL;
 	int rule_cnt, sample_cnt, rsize;
 	int i, ones, ret;
 	rule_t *rules=NULL;
 	size_t len = 0;
-    size_t rulelen;
+  size_t rulelen;
 
 	sample_cnt = rsize = 0;
 
