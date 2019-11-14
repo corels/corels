@@ -31,8 +31,8 @@ class NullLogger {
     virtual std::string dumpPrefixLens() { return ""; }
     virtual std::string dumpRemainingSpaceSize() { return ""; }
 
-    virtual inline void setVerbosity(int verbosity) {}
-    virtual inline int getVerbosity() { return 0; }
+    virtual inline void setVerbosity(std::set<std::string> verbosity) {}
+    virtual inline std::set<std::string> getVerbosity() { return std::set<std::string>(); }
     virtual inline void setFrequency(int frequency) {}
     virtual inline int getFrequency() { return 1000; }
     virtual inline void addToLowerBoundTime(double t) {}
@@ -167,22 +167,22 @@ class NullLogger {
     double _c;
     size_t _nrules;
     State _state;
-    int _v;                                     // verbosity
+    std::set<std::string> _v;                   // verbosity
     int _freq;                                  // frequency of logging
     ofstream _f;                                // output file
 };
 
 class PyLogger : public NullLogger {
-    inline void setVerbosity(int verbosity) override {
+    inline void setVerbosity(std::set<std::string> verbosity) override {
         _v = verbosity;
     }
-    inline int getVerbosity() override { return _v; }
+    inline std::set<std::string> getVerbosity() override { return _v; }
 };
 
 class Logger : public NullLogger {
   public:
     void closeFile() override { if (_f.is_open()) _f.close(); }
-    Logger(double c, size_t nrules, int verbosity, char* log_fname, int freq);
+    Logger(double c, size_t nrules, std::set<std::string> verbosity, char* log_fname, int freq);
     ~Logger() {
         free(_state.prefix_lens);
         closeFile();
@@ -195,10 +195,10 @@ class Logger : public NullLogger {
     std::string dumpRemainingSpaceSize() override;
 #endif
 
-    inline void setVerbosity(int verbosity) override {
+    inline void setVerbosity(std::set<std::string> verbosity) override {
         _v = verbosity;
     }
-    inline int getVerbosity() override {
+    inline std::set<std::string> getVerbosity() override {
         return _v;
     }
     inline void setFrequency(int frequency) override {

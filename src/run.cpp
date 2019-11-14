@@ -63,20 +63,14 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
         printf("\n\n");
     }
 
-    int v = 0;
-    if (verbosity.count("loud"))
-        v = 1000;
-    else if (verbosity.count("progress"))
-        v = 1;
-
     if(!logger) {
         if(log_fname)
-            logger = new Logger(c, nrules, v, log_fname, freq);
+            logger = new Logger(c, nrules, verbosity, log_fname, freq);
         else {
             logger = new PyLogger();
         }
     }
-    logger->setVerbosity(v);
+    logger->setVerbosity(verbosity);
 
     init = timestamp();
     char run_type[BUFSZ];

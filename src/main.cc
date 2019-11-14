@@ -22,11 +22,16 @@ bool parse_verbosity(char* str, char* verbstr, std::set<std::string>* verbosity)
     strcpy(verbstr, verb_trim);
     vopt = strtok(verb_trim, ",");
     while (vopt != NULL) {
-        if (!strstr(vstr, vopt)) {
-            return false;
+        int voptlen = strlen(vopt);
+        const char* opt = strstr(vstr, vopt);
+        // Check if opt is actually a valid option rather than just contained in vstr
+        if(opt && (opt == vstr || *(opt - 1) == '|') &&
+          (*(opt + voptlen) == '\0' || *(opt + voptlen) == '|')) {
+          verbosity->insert(vopt);
+          vopt = strtok(NULL, ",");
+        } else {
+          return false;
         }
-        verbosity->insert(vopt);
-        vopt = strtok(NULL, ",");
     }
 
     return true;
