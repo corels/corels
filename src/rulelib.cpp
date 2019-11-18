@@ -69,19 +69,19 @@ int
 rules_init(const char *infile, int *nrules,
     int *nsamples, rule_t **rules_ret, int add_default_rule)
 {
-  std::ifstream fi(infile);
-  std::string line;
-  char *rulestr, *line_cpy = NULL;
+	std::ifstream fi(infile);
+	std::string line;
+	char *rulestr, *line_cpy = NULL;
 	int rule_cnt, sample_cnt, rsize;
 	int i, ones, ret;
 	rule_t *rules=NULL;
 	size_t len = 0;
-  size_t rulelen;
+	size_t rulelen;
 
 	sample_cnt = rsize = 0;
 
 	if (!fi.is_open())
-        return (1);
+		return (1);
 
 	/*
 	 * Leave a space for the 0th (default) rule, which we'll add at
@@ -89,8 +89,8 @@ rules_init(const char *infile, int *nrules,
 	 */
 	rule_cnt = add_default_rule != 0 ? 1 : 0;
 	while (std::getline(fi, line)) {
-    len = line.length();
-        line_cpy = strdup(line.c_str());
+		len = line.length();
+		line_cpy = strdup(line.c_str());
 		if (rule_cnt >= rsize) {
 			rsize += RULE_INC;
                 	rules = (rule_t*)realloc(rules, rsize * sizeof(rule_t));
@@ -104,7 +104,7 @@ rules_init(const char *infile, int *nrules,
 
 		rulelen = strlen(rulestr) + 1;
 		len -= rulelen;
-    char* line_data = &line_cpy[rulelen];
+		char* line_data = &line_cpy[rulelen];
 
 		if ((rules[rule_cnt].features = strdup(rulestr)) == NULL)
 			goto err;
@@ -117,10 +117,10 @@ rules_init(const char *infile, int *nrules,
 		line_data[len-1] = '\0';
 		if (ascii_to_vector(line_data, len, &sample_cnt, &ones,
 		    &rules[rule_cnt].truthtable) != 0) {
-                fprintf(stderr, "Loading rule '%s' failed\n", rulestr);
-                errno = 1;
-		    	goto err;
-        }
+			fprintf(stderr, "Loading rule '%s' failed\n", rulestr);
+			errno = 1;
+			goto err;
+		}
 		rules[rule_cnt].support = ones;
 
 		/* Now compute the number of clauses in the rule. */
@@ -129,12 +129,12 @@ rules_init(const char *infile, int *nrules,
 			if (*cp == ',')
 				rules[rule_cnt].cardinality++;
 		rule_cnt++;
-        line = "";
-    free(line_cpy);
-    line_cpy = NULL;
+		line = "";
+		free(line_cpy);
+		line_cpy = NULL;
 	}
 	/* All done! */
-    fi.close();
+	fi.close();
 
 	/* Now create the 0'th (default) rule. */
 	if (add_default_rule) {
@@ -154,8 +154,8 @@ rules_init(const char *infile, int *nrules,
 err:
 	ret = errno;
 
-  if (line_cpy)
-    free(line_cpy);
+	if (line_cpy)
+		free(line_cpy);
 
 	/* Reclaim space. */
 	if (rules != NULL) {
@@ -169,7 +169,7 @@ err:
 		}
 		free(rules);
 	}
-  fi.close();
+	fi.close();
 	return (ret);
 }
 
