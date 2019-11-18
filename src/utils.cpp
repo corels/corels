@@ -169,3 +169,29 @@ void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree
     f << "default~" << preds.back();
     f.close();
 }
+
+// Returns true on success
+bool parse_verbosity(char* str, char* verbstr, size_t verbstr_size, std::set<std::string>* verbosity) {
+    char *vopt, *verb_trim;
+    const char *vstr = VERBSTR;
+    
+    verb_trim = strtok(str, " ");
+    strncpy(verbstr, verb_trim, verbstr_size);
+    vopt = strtok(verb_trim, ",");
+    while (vopt != NULL) {
+        int voptlen = strlen(vopt);
+        const char* opt = strstr(vstr, vopt);
+        // Check if opt is actually a valid option rather than just contained in vstr
+        if(voptlen && opt && (opt == vstr || *(opt - 1) == '|') &&
+          (*(opt + voptlen) == '\0' || *(opt + voptlen) == '|')) {
+          verbosity->insert(vopt);
+          vopt = strtok(NULL, ",");
+        } else {
+          verbosity->clear();
+          return false;
+        }
+    }
+
+    return true;
+}
+

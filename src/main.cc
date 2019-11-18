@@ -6,36 +6,7 @@
 #include <string.h>
 #include "run.hh"
 
-#define BUFSZ 512
-#define VERBSTR "rule|label|minor|samples|progress|loud|silent"
-
-#ifndef _WIN32
-#define _snprintf snprintf
-#endif
-
-// Returns true on success
-bool parse_verbosity(char* str, char* verbstr, std::set<std::string>* verbosity) {
-    char *vopt, *verb_trim;
-    const char *vstr = VERBSTR;
-    
-    verb_trim = strtok(str, " ");
-    strcpy(verbstr, verb_trim);
-    vopt = strtok(verb_trim, ",");
-    while (vopt != NULL) {
-        int voptlen = strlen(vopt);
-        const char* opt = strstr(vstr, vopt);
-        // Check if opt is actually a valid option rather than just contained in vstr
-        if(opt && (opt == vstr || *(opt - 1) == '|') &&
-          (*(opt + voptlen) == '\0' || *(opt + voptlen) == '|')) {
-          verbosity->insert(vopt);
-          vopt = strtok(NULL, ",");
-        } else {
-          return false;
-        }
-    }
-
-    return true;
-}
+#define BUFSZ  512
 
 int main(int argc, char *argv[]) {
     const char usage[] = "USAGE: %s [-b] "
@@ -87,7 +58,7 @@ int main(int argc, char *argv[]) {
             use_captured_sym_map = map_type == 2;
             break;
         case 'v':
-            verr = !parse_verbosity(optarg, &verbstr[0], &verbosity);
+            verr = !parse_verbosity(optarg, &verbstr[0], sizeof(verbstr), &verbosity);
             break;
         case 'n':
             max_num_nodes = atoi(optarg);

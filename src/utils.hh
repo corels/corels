@@ -440,6 +440,10 @@ inline double time_diff(double t0) {
 #define strdup _strdup
 #endif
 
+#ifndef _WIN32
+#define _snprintf snprintf
+#endif
+
 #include "alloc.hh"
 /*
  * Prints the final rulelist that CORELS returns.
@@ -452,3 +456,7 @@ void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree
                           const rule_t rules[],
                           const rule_t labels[],
                           char fname[]);
+
+bool parse_verbosity(char* str, char* verbstr, size_t verbstr_size, std::set<std::string>* verbosity);
+
+#define VERBSTR "rule|label|minor|samples|progress|loud|silent"

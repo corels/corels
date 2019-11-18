@@ -13,10 +13,16 @@ DEPSDIR := .deps
 
 CLEAN := corels *~ *.o *.so
 
-all: corels
+all: corels tests
+
+tests: tests.o utils.o
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
 
 corels: run.o main.o corels.o pmap.o cache.o rulelib.o utils.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
+
+tests.o: tests.cc $(DEPSDIR)/stamp
+	$(CXX) $(CXXFLAGS) $(DEPCFLAGS) -c $< -o $@
 
 main.o: main.cc $(DEPSDIR)/stamp
 	$(CXX) $(CXXFLAGS) $(DEPCFLAGS) -c $< -o $@
