@@ -204,7 +204,7 @@ int main(int argc, char *argv[]) {
                 (use_captured_sym_map ? "with_captured_symmetry_map" : "no_pmap"),
             meta ? "minor" : "no_minor",
             ablation ? ((ablation == 1) ? "support" : "lookahead") : "none",
-            max_num_nodes, c, verbosity, freq);
+            max_num_nodes, c, verbstr, freq);
     snprintf(log_fname, BUFSZ+4, "%s.txt", froot);
     snprintf(opt_fname, BUFSZ+8, "%s-opt.txt", froot);
 
