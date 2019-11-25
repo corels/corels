@@ -162,7 +162,7 @@ There are four training data files:
 
 * `compas_train.out` : `155` mined antecedents (binary features and length-2 conjunctions of binary features with support in `[0.005, 0.995]`), e.g.,
 
-    {sex:Female}, {age:18-20}, {sex:Male,current-charge-degree:Misdemeanor}, {age:26-45,juvenile-felonies:>0} 
+    {sex:Female}, {age:18-20}, {sex:Male,current-charge-degree:Misdemeanor}, {age:26-45,juvenile-felonies:>0}
 
 * `compas_train.labels` : class labels
 

@@ -15,6 +15,7 @@ data/*.minor
 
 # GNUmakefile deps
 src/.deps/*
+src/corels
 
 # OS Generated files
 .DS_Store*
@@ -23,5 +24,5 @@ src/.deps/*
 src/tags
 
 # Specific to bbcache
-*.txt
-logs/
+logs/*
+!logs/README.txt
