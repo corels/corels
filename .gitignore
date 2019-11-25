@@ -16,6 +16,7 @@ data/*.minor
 # GNUmakefile deps
 src/.deps/*
 src/corels
+src/tests
 
 # OS Generated files
 .DS_Store*
