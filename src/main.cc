@@ -193,8 +193,8 @@ int main(int argc, char *argv[]) {
         meta = NULL;
 
     char froot[BUFSZ];
-    char log_fname[BUFSZ];
-    char opt_fname[BUFSZ];
+    char log_fname[BUFSZ+4];
+    char opt_fname[BUFSZ+8];
     const char* pch = strrchr(argv[0], '/');
     _snprintf(froot, BUFSZ, "../logs/for-%s-%s%s-%s-%s-removed=%s-max_num_nodes=%d-c=%.7f-v=%s-f=%d",
             pch ? pch + 1 : "",
@@ -204,9 +204,9 @@ int main(int argc, char *argv[]) {
                 (use_captured_sym_map ? "with_captured_symmetry_map" : "no_pmap"),
             meta ? "minor" : "no_minor",
             ablation ? ((ablation == 1) ? "support" : "lookahead") : "none",
-            max_num_nodes, c, verbstr, freq);
-    _snprintf(log_fname, BUFSZ, "%s.txt", froot);
-    _snprintf(opt_fname, BUFSZ, "%s-opt.txt", froot);
+            max_num_nodes, c, verbosity, freq);
+    snprintf(log_fname, BUFSZ+4, "%s.txt", froot);
+    snprintf(opt_fname, BUFSZ+8, "%s-opt.txt", froot);
 
     int ret = 0;
 
