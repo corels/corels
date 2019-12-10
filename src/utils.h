@@ -13,7 +13,7 @@
 #include <sys/time.h>
 #endif
 
-#include "rule.hh"
+#include "rule.h"
 
 using namespace std;
 
@@ -444,7 +444,7 @@ inline double time_diff(double t0) {
 #define _snprintf snprintf
 #endif
 
-#include "alloc.hh"
+#include "alloc.h"
 /*
  * Prints the final rulelist that CORELS returns.
  * rulelist -- rule ids of optimal rulelist

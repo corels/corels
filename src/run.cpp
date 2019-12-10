@@ -3,8 +3,8 @@
 #include <set>
 #include <string.h>
 
-#include "queue.hh"
-#include "run.hh"
+#include "queue.h"
+#include "run.h"
 
 #define BUFSZ 512
 
@@ -158,7 +158,7 @@ double run_corels_end(std::vector<int>* rulelist, std::vector<int>* classes, int
     }
 
     // Exiting early skips cleanup
-    if(!early) {    
+    if(!early) {
         if (tree)
             delete tree;
         if (queue)

@@ -1,10 +1,10 @@
-#include "queue.hh"
+#include "queue.h"
 #include <iostream>
 #include <stdio.h>
 #include <getopt.h>
 #include <string>
 #include <string.h>
-#include "run.hh"
+#include "run.h"
 
 #define BUFSZ  512
 
