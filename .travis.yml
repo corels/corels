@@ -1,0 +1,20 @@
+
+language: cpp
+sudo: required
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-7
+
+install:
+  - which $CXX
+  - which $CC
+  - $CXX --version
+
+script:
+  - cd src 
+  - make 
+  - ./tests
