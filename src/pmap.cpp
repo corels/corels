@@ -1,4 +1,4 @@
-#include "pmap.hh"
+#include "pmap.h"
 
 PrefixPermutationMap::PrefixPermutationMap()
     : pmap(new PrefixMap) {}
@@ -16,15 +16,15 @@ CapturedPermutationMap::~CapturedPermutationMap() {
         delete pmap;
 }
 
-Node* PrefixPermutationMap::insert (unsigned short new_rule, size_t nrules, bool prediction, 
-        bool default_prediction, double lower_bound, double objective, Node* parent, 
+Node* PrefixPermutationMap::insert (unsigned short new_rule, size_t nrules, bool prediction,
+        bool default_prediction, double lower_bound, double objective, Node* parent,
         int num_not_captured, int nsamples, int len_prefix, double c, double equivalent_minority,
-        CacheTree* tree, VECTOR not_captured, tracking_vector<unsigned short, 
+        CacheTree* tree, VECTOR not_captured, tracking_vector<unsigned short,
         DataStruct::Tree> parent_prefix) {
     (void) not_captured;
     logger->incPermMapInsertionNum();
     parent_prefix.push_back(new_rule);
-    
+
     unsigned char* ordered = (unsigned char*) malloc(sizeof(unsigned char) * (len_prefix + 1));
     ordered[0] = (unsigned char)len_prefix;
 
@@ -33,15 +33,15 @@ Node* PrefixPermutationMap::insert (unsigned short new_rule, size_t nrules, bool
 
     std::function<bool(int, int)> cmp = [&](int i, int j) { return parent_prefix[i] < parent_prefix[j]; };
     std::sort(&ordered[1], &ordered[len_prefix + 1], cmp);
-    
+
     std::sort(parent_prefix.begin(), parent_prefix.end());
     unsigned short *pre_key = (unsigned short*) malloc(sizeof(unsigned short) * (len_prefix + 1));
     pre_key[0] = (unsigned short)len_prefix;
     memcpy(&pre_key[1], &parent_prefix[0], len_prefix * sizeof(unsigned short));
-    
+
     logger->addToMemory((len_prefix + 1) * (sizeof(unsigned char) + sizeof(unsigned short)), DataStruct::Pmap);
     prefix_key key = { pre_key };
-    
+
     Node* child = NULL;
     PrefixMap::iterator iter = pmap->find(key);
     if (iter != pmap->end()) {
@@ -78,9 +78,9 @@ Node* PrefixPermutationMap::insert (unsigned short new_rule, size_t nrules, bool
     return child;
 }
 
-Node* CapturedPermutationMap::insert(unsigned short new_rule, size_t nrules, bool prediction, 
-        bool default_prediction, double lower_bound, double objective, Node* parent, int num_not_captured, 
-        int nsamples, int len_prefix, double c, double equivalent_minority, CacheTree* tree, 
+Node* CapturedPermutationMap::insert(unsigned short new_rule, size_t nrules, bool prediction,
+        bool default_prediction, double lower_bound, double objective, Node* parent, int num_not_captured,
+        int nsamples, int len_prefix, double c, double equivalent_minority, CacheTree* tree,
         VECTOR not_captured, tracking_vector<unsigned short, DataStruct::Tree> parent_prefix) {
     logger->incPermMapInsertionNum();
     parent_prefix.push_back(new_rule);
@@ -119,4 +119,3 @@ Node* CapturedPermutationMap::insert(unsigned short new_rule, size_t nrules, boo
     }
     return child;
 }
-

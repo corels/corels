@@ -1,8 +1,8 @@
 #ifndef RUN_H
 #define RUN_H
 
-#include "rule.hh"
-#include "queue.hh"
+#include "rule.h"
+#include "queue.h"
 
 int run_corels_begin(double c, char* vstring, int curiosity_policy,
                   int map_type, int ablation, int calculate_size, int nrules, int nlabels,

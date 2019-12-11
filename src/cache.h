@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils.hh"
-#include "alloc.hh"
-#include "rule.hh"
+#include "utils.h"
+#include "alloc.h"
+#include "rule.h"
 #include <iterator>
 #include <map>
 #include <vector>
@@ -19,7 +19,7 @@ class Node {
          size_t num_captured, double equivalent_minority);
 
     virtual ~Node();
-     
+
     inline unsigned short id() const;
     inline bool prediction() const;
     inline bool default_prediction() const;
@@ -28,7 +28,7 @@ class Node {
     inline bool done() const;
     inline void set_done();
     inline bool deleted() const;
-    inline void set_deleted(); 
+    inline void set_deleted();
 
     // Returns pair of prefixes and predictions for the path from this node to the root
     inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> >

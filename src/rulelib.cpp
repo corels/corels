@@ -28,8 +28,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <string>
-#include "rule.hh"
-#include "utils.hh"
+#include "rule.h"
+#include "utils.h"
 
 /* Function declarations. */
 #define RULE_INC 100

@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-#include "utils.hh"
+#include "utils.h"
 
 #define BUFSZ  512
 
@@ -10,13 +10,13 @@ TEST_CASE("parse_verbosity() works correctly", "[parse_verbosity]") {
   strcpy(input_str_cpy, "rule,label garbage");
   char verbstr[BUFSZ];
   std::set<std::string> verbosity;
-  
+
   SECTION("Copies verbstr") {
     bool result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
     REQUIRE(strcmp(verbstr, options) == 0);
     REQUIRE(result);
   }
-  
+
   SECTION("Correctly accepts all verbosities") {
     strcpy(input_str_cpy, "minor,samples,progress,loud,silent,label,rule");
     bool result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
@@ -27,7 +27,7 @@ TEST_CASE("parse_verbosity() works correctly", "[parse_verbosity]") {
     }
     REQUIRE(verbosity.size() == 7);
   }
-  
+
   SECTION("Correctly accepts some verbosities") {
     strcpy(input_str_cpy, "silent,samples");
     bool result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
@@ -35,7 +35,7 @@ TEST_CASE("parse_verbosity() works correctly", "[parse_verbosity]") {
     REQUIRE(verbosity.count("silent"));
     REQUIRE(verbosity.count("samples"));
     REQUIRE(verbosity.size() == 2);
-    
+
     strcpy(input_str_cpy, ",silent,samples,");
     result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
     REQUIRE(result);
@@ -43,7 +43,7 @@ TEST_CASE("parse_verbosity() works correctly", "[parse_verbosity]") {
     REQUIRE(verbosity.count("samples"));
     REQUIRE(verbosity.size() == 2);
   }
-  
+
   SECTION("Correctly rejects wrong verbosities") {
     strcpy(input_str_cpy, "nope");
     bool result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
@@ -54,12 +54,12 @@ TEST_CASE("parse_verbosity() works correctly", "[parse_verbosity]") {
     result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
     REQUIRE(!result);
     REQUIRE(!verbosity.size());
-    
+
     strcpy(input_str_cpy, "label,rul");
     result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
     REQUIRE(!result);
     REQUIRE(!verbosity.size());
-    
+
     strcpy(input_str_cpy, "samples,ilent");
     result = parse_verbosity(input_str_cpy, &verbstr[0], BUFSZ, &verbosity);
     REQUIRE(!result);
