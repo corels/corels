@@ -1,0 +1,10 @@
+
+## Compile as C++11
+CXX_STD = CXX11
+
+## GNU GMP support added by configure if found
+## You can also enable allocation tracking by adding -DTRACK_ALLOC here
+PKG_CXXFLAGS = -I. -DGMP -g -O2 ../../src
+
+## GNU GMP support added by configure if found
+PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) -lgmp 

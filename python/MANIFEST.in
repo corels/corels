@@ -1,0 +1,8 @@
+include LICENSE
+include corels/VERSION
+include corels/README.txt
+include corels/_corels.cpp
+include corels/*.py
+include corels/src/utils*
+include corels/src/corels/src/*.hh
+include corels/src/corels/src/*.cpp

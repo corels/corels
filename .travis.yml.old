@@ -1,0 +1,134 @@
+language: python
+matrix:
+  include:
+  - name: Python 3.7 on Windows
+    os: windows
+    language: shell
+    before_install:
+    - choco install python --version 3.8
+    - choco install make
+    env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+    install: pip3 install pytest .
+    before_script:
+    - cd corels/src/corels/src && make -B NGMP=1
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 2.7 on Linux
+    python: 2.7
+    before_install:
+    - pip install --upgrade pip
+    - pip install pytest
+    install: pip install .
+    before_script:
+    - cd corels/src/corels/src && make -B NGMP=1
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 3.7 on Xenial Linux
+    python: 3.7
+    dist: xenial
+    before_install:
+    - pip install --upgrade pip
+    - pip install pytest
+    install: pip install .
+    before_script:
+    - cd corels/src/corels/src && make -B NGMP=1
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 2.7 on Linux with GMP
+    python: 2.7
+    before_install:
+    - sudo apt-get install libgmp-dev
+    - pip install --upgrade pip
+    - pip install pytest
+    install: pip install .
+    before_script:
+    - cd corels/src/corels/src && make -B
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 3.7 on Xenial Linux with GMP
+    python: 3.7
+    dist: xenial
+    before_install:
+    - sudo apt-get install libgmp-dev
+    - pip install --upgrade pip
+    - pip install pytest
+    install: pip install .
+    before_script:
+    - cd corels/src/corels/src && make -B
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 2.7 on macOS
+    os: osx
+    osx_image: xcode10.2
+    language: shell
+    before_install:
+    - pip install --upgrade pip
+    - pip install pytest
+    install: pip install .
+    before_script:
+    - cd corels/src/corels/src && make -B NGMP=1
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 3.7 on macOS
+    os: osx
+    osx_image: xcode10.2
+    language: shell
+    before_install:
+    - pip3 install --upgrade pip
+    - pip3 install pytest
+    install: pip3 install .
+    before_script:
+    - cd corels/src/corels/src && make -B NGMP=1
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python3 -m pytest
+  - name: Python 2.7 on macOS with GMP
+    os: osx
+    osx_image: xcode10.2
+    addons:
+      homebrew:
+        packages:
+        - gmp
+    language: shell
+    before_install:
+    - pip install --upgrade pip
+    - pip install pytest
+    install: pip install .
+    before_script:
+    - cd corels/src/corels/src && make -B
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python -m pytest
+  - name: Python 3.7 on macOS with GMP
+    os: osx
+    osx_image: xcode10.2
+    addons:
+      homebrew:
+        packages:
+        - gmp
+    language: shell
+    before_install:
+    - pip3 install --upgrade pip
+    - pip3 install pytest
+    install: pip3 install .
+    before_script:
+    - cd corels/src/corels/src && make -B
+    - "./corels -b ../data/compas_test.out ../data/compas_test.label"
+    script: cd ../../../../tests && python3 -m pytest
+  - stage: deploy
+    name: Python 3.7 Docs and PyPi on Xenial Linux
+    python: 3.7
+    dist: xenial
+    install:
+    - pip install --upgrade pip
+    - pip install sphinx
+    script:
+    - cd docs
+    - make html
+    - cd ../
+    deploy:
+      provider: pypi
+      user: "fingoldin" 
+      distributions: "sdist"
+      server: https://test.pypi.org/legacy/
+      skip_existing: true
+      password:
+        secure: pacjUROajmH0VKSKCgvveDrGs8tw6vNN0CI55pAduXRClxR0f8tZ45qMhiRWS39aVLCDtnaYc0nP8gVCRn+va6jK3+Jg+EmP0bNMrlxzCkCrfm7hEbkA4Yb+BRwF+pnrlWIGEe0b8rQUF2CgnPBp+9hE+kH1go+xgvJpFmiVh/sBTJDhA3F/laqYYmmkiI/XXD1kUFZdaIkmfFIU9qqYmyNsLmnIV+dl0y3PSnKZfrvg9Td60Py1CJPLVJKqURMKzbArCmECswEurcUHQZeLzmpIXeQqAgtV2WIAeGCf3yZYRUw/d0boqTClX0pVU47X+5O+gU2mTCJtNo/8cEZHm8viOI6n3yYkKpLdtrwKlVZB8iqcROoVKT6KdeKZF0oa6O7+7HKz0XNiiEi95UXG1BZkccWNeOePT5d1u11y1yxu3VQA3QDGoAMSSFS5xdv1vsv7+ztaU43hZHrMYyrD4QFc++rxwtk67h8jElu78b9ApL8/fmozZZspI+VkQEyCzNY11bucYU5gGQld8n7OX6KuODVtdH9IanhCfEEUdNumTHSii3KZ41TlV/P8Dxb5GEdMXUYjZBqxTIXOARlof/Zuw3z64dwSQgdrx5GoM4jWOKdnhGnWfb3fq1VHrjZHCmhq0AuVuQVmu4jBLV/pXoOkmhH/wS2BR2g0bZCKgIA=
