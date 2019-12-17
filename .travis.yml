@@ -1,0 +1,12 @@
+
+language: cpp
+sudo: false
+
+install:
+  - which $CXX
+  - $CXX --version
+
+script:
+  - cd src 
+  - make 
+  - ./tests
