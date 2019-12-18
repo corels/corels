@@ -5,6 +5,10 @@ ifndef NGMP
     LIBS += -L/usr/local/lib -lgmp
 endif
 
+ifdef TRACKALLOC
+    CFLAGS += -DTRACK_ALLOC
+endif
+
 CXXFLAGS := $(CFLAGS)
 
 CXX := g++ -std=c++11

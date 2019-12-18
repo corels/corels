@@ -17,5 +17,5 @@ install:
 
 script:
   - cd src 
-  - make ${TRACKALLOC}
+  - make
   - ./tests
