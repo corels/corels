@@ -2,11 +2,20 @@
 language: cpp
 sudo: false
 
+env:
+  matrix:
+    #
+    - INFO="with alloc track"
+      TRACKALLOC=-DTRACK_ALLOC
+    #
+    - INFO="without alloc track"
+      TRACKALLOC=
+      
 install:
   - which $CXX
   - $CXX --version
 
 script:
   - cd src 
-  - make 
+  - make ${TRACKALLOC}
   - ./tests
