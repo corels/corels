@@ -6,7 +6,7 @@ env:
   matrix:
     #
     - INFO="with alloc track"
-      TRACKALLOC=-DTRACK_ALLOC
+      TRACKALLOC=1
     #
     - INFO="without alloc track"
       TRACKALLOC=
