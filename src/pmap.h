@@ -43,7 +43,11 @@ struct prefix_hash {
     }
 };
 
+#if defined(TRACK_ALLOC)
 typedef std::unordered_map<prefix_key, prefix_val, prefix_hash, prefix_eq, track_alloc<std::pair<const prefix_key, prefix_val>, DataStruct::Pmap> > PrefixMap;
+#else
+typedef std::unordered_map<prefix_key, prefix_val, prefix_hash, prefix_eq, std::allocator<std::pair<const prefix_key, prefix_val> > > PrefixMap;
+#endif
 
 /*
  * Represents captured vector using the VECTOR type defined in rule.h
@@ -80,7 +84,11 @@ struct captured_hash {
     }
 };
 
+#if defined(TRACK_ALLOC)
 typedef std::unordered_map<captured_key, cap_val, captured_hash, cap_eq, track_alloc<std::pair<const captured_key, cap_val>, DataStruct::Pmap> > CapturedMap;
+#else
+typedef std::unordered_map<captured_key, cap_val, captured_hash, cap_eq, std::allocator<std::pair<const captured_key, cap_val> > > CapturedMap;
+#endif
 
 class PermutationMap {
     public:

@@ -50,7 +50,11 @@ class Node {
     }
 
   protected:
+#if defined(TRACK_ALLOC)
     std::map<unsigned short, Node*, std::less<unsigned short>, track_alloc<std::pair<const unsigned short, Node*>, DataStruct::Tree> > children_;
+#else
+    std::map<unsigned short, Node* > children_;
+#endif
     Node* parent_;
     double lower_bound_;
     double objective_;
@@ -142,8 +146,11 @@ class CacheTree {
 
     double min_objective_;
     tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist_;
+#if defined(TRACK_ALLOC)
     std::vector<bool, track_alloc<bool, DataStruct::Tree> > opt_predictions_;
-
+#else
+    std::vector<bool> opt_predictions_;
+#endif
     rule_t *rules_;
     rule_t *labels_;
     rule_t *minority_;

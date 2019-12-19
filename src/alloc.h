@@ -3,6 +3,7 @@
 #include <memory>
 #include <typeinfo>
 
+#if defined(TRACK_ALLOC)
 template <class T, DataStruct S>
 struct track_alloc {
     DataStruct data_struct = S;
@@ -30,3 +31,8 @@ bool operator!=(const track_alloc<T, S>& t1, const track_alloc<U, V>& t2) {
 }
 template<class T, DataStruct S>
 using tracking_vector = std::vector<T, track_alloc<T, S> >;
+
+#else
+template<class T, DataStruct S>
+using tracking_vector = std::vector<T, std::allocator<T> >;
+#endif
