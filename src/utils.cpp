@@ -3,6 +3,13 @@
 #include <assert.h>
 #include <sstream>
 
+#if defined(R_BUILD)
+ #define STRICT_R_HEADERS
+ #include "R.h"
+ // textual substitution
+ #define printf Rprintf
+#endif
+
 std::string sizet_tostring(size_t v) {
     std::ostringstream ss;
     ss << v;
