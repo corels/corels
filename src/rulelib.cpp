@@ -31,6 +31,13 @@
 #include "rule.h"
 #include "utils.h"
 
+#if defined(R_BUILD)
+ #define STRICT_R_HEADERS
+ #include "R.h"
+ // textual substitution
+ #define printf Rprintf
+#endif
+
 /* Function declarations. */
 #define RULE_INC 100
 
@@ -117,9 +124,13 @@ rules_init(const char *infile, int *nrules,
 		line_data[len-1] = '\0';
 		if (ascii_to_vector(line_data, len, &sample_cnt, &ones,
 		    &rules[rule_cnt].truthtable) != 0) {
-			fprintf(stderr, "Loading rule '%s' failed\n", rulestr);
-			errno = 1;
-			goto err;
+                        #if !defined(R_BUILD)
+                        fprintf(stderr, "Loading rule '%s' failed\n", rulestr);
+                        #else
+                        REprintf("Loading rule '%s' failed\n", rulestr);
+                        #endif
+                        errno = 1;
+                        goto err;
 		}
 		rules[rule_cnt].support = ones;
 
@@ -320,10 +331,14 @@ ascii_to_vector(char *line, size_t len, int *nsamples, int *nones, VECTOR *ret)
 	if (*nsamples == 0)
 		*nsamples = i;
 	else if (*nsamples != i) {
-		fprintf(stderr, "Wrong number of samples. Expected %d got %d\n",
-		    *nsamples, i);
-		free(buf);
-		buf = NULL;
+                #if !defined(R_BUILD)
+                fprintf(stderr, "Wrong number of samples. Expected %d got %d\n",
+                    *nsamples, i);
+                #else
+                REprintf("Wrong number of samples. Expected %d got %d\n", *nsamples, i);
+                #endif
+                free(buf);
+                buf = NULL;
         ones = 0;
 	}
 	*nones = ones;
@@ -904,10 +919,9 @@ rule_vector_print(VECTOR v, int nsamples)
 	char* str = mpz_get_str(NULL, 2, v);
     int len = strlen(str);
     for(int i = 0; i < (nsamples - len); i++) {
-        fputc('0', stdout);
+      printf("0");
     }
-    fputs(str, stdout);
-	fputc('\n', stdout);
+    printf("%s\n", str);
 #else
     v_entry m = ~(((v_entry) -1) >> 1);
     unsigned n = (nsamples + BITS_PER_ENTRY - 1) / BITS_PER_ENTRY;
@@ -918,7 +932,7 @@ rule_vector_print(VECTOR v, int nsamples)
             t <<= 1;
         }
     }
-    fputc('\n', stdout);
+    printf("\n");
 #endif
 
 }
