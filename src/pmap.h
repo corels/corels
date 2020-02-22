@@ -62,9 +62,9 @@ struct captured_key {
 struct cap_eq {
     bool operator()(const captured_key& k, const captured_key& other) const {
 #ifdef GMP
-        return !rule_vector_cmp(k.key, other.key, 0, 0);
+        return !rule_vector_equal(k.key, other.key, 0, 0);
 #else
-        return !rule_vector_cmp(k.key, other.key, k.len, other.len);
+        return !rule_vector_equal(k.key, other.key, k.len, other.len);
 #endif
     }
 };
