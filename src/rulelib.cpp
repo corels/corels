@@ -116,12 +116,6 @@ rules_init(const char *infile, int *nrules,
 		if ((rules[rule_cnt].features = strdup(rulestr)) == NULL)
 			goto err;
 
-		/*
-		 * At this point "len" is a line terminated by a newline
-		 * at line[len-1]; let's make it a NUL and shorten the line
-		 * length by one.
-		 */
-		line_data[len-1] = '\0';
 		if (ascii_to_vector(line_data, len, &sample_cnt, &ones,
 		    &rules[rule_cnt].truthtable) != 0) {
                         #if !defined(R_BUILD)
