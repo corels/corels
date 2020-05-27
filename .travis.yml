@@ -1,0 +1,21 @@
+
+language: cpp
+sudo: false
+
+env:
+  matrix:
+    #
+    - INFO="with alloc track"
+      TRACKALLOC=1
+    #
+    - INFO="without alloc track"
+      TRACKALLOC=
+      
+install:
+  - which $CXX
+  - $CXX --version
+
+script:
+  - cd src 
+  - make
+  - ./tests

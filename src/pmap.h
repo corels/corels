@@ -1,7 +1,7 @@
 #pragma once
-#include "cache.hh"
-#include "utils.hh"
-#include "alloc.hh"
+#include "cache.h"
+#include "utils.h"
+#include "alloc.h"
 #include <unordered_map>
 #include <algorithm>
 #include <functional>
@@ -43,7 +43,11 @@ struct prefix_hash {
     }
 };
 
+#if defined(TRACK_ALLOC)
 typedef std::unordered_map<prefix_key, prefix_val, prefix_hash, prefix_eq, track_alloc<std::pair<const prefix_key, prefix_val>, DataStruct::Pmap> > PrefixMap;
+#else
+typedef std::unordered_map<prefix_key, prefix_val, prefix_hash, prefix_eq, std::allocator<std::pair<const prefix_key, prefix_val> > > PrefixMap;
+#endif
 
 /*
  * Represents captured vector using the VECTOR type defined in rule.h
@@ -80,7 +84,11 @@ struct captured_hash {
     }
 };
 
+#if defined(TRACK_ALLOC)
 typedef std::unordered_map<captured_key, cap_val, captured_hash, cap_eq, track_alloc<std::pair<const captured_key, cap_val>, DataStruct::Pmap> > CapturedMap;
+#else
+typedef std::unordered_map<captured_key, cap_val, captured_hash, cap_eq, std::allocator<std::pair<const captured_key, cap_val> > > CapturedMap;
+#endif
 
 class PermutationMap {
     public:
@@ -105,10 +113,10 @@ class PrefixPermutationMap : public PermutationMap {
         size_t size() override {
             return pmap->size();
         }
-        Node* insert (unsigned short new_rule, size_t nrules, bool prediction, 
-            bool default_prediction, double lower_bound, double objective, Node* parent, 
+        Node* insert (unsigned short new_rule, size_t nrules, bool prediction,
+            bool default_prediction, double lower_bound, double objective, Node* parent,
             int num_not_captured, int nsamples, int len_prefix, double c, double equivalent_minority,
-            CacheTree* tree, VECTOR not_captured, tracking_vector<unsigned short, 
+            CacheTree* tree, VECTOR not_captured, tracking_vector<unsigned short,
             DataStruct::Tree> parent_prefix) override;
 	private:
 		PrefixMap* pmap;
@@ -121,8 +129,8 @@ class CapturedPermutationMap : public PermutationMap {
         size_t size() override {
             return pmap->size();
         }
-        Node* insert(unsigned short new_rule, size_t nrules, bool prediction, bool default_prediction, 
-                double lower_bound, double objective, Node* parent, int num_not_captured, int nsamples, 
+        Node* insert(unsigned short new_rule, size_t nrules, bool prediction, bool default_prediction,
+                double lower_bound, double objective, Node* parent, int num_not_captured, int nsamples,
                 int len_prefix, double c, double equivalent_minority, CacheTree* tree, VECTOR not_captured,
                  tracking_vector<unsigned short, DataStruct::Tree> parent_prefix) override;
 	private:

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils.hh"
-#include "alloc.hh"
-#include "rule.hh"
+#include "utils.h"
+#include "alloc.h"
+#include "rule.h"
 #include <iterator>
 #include <map>
 #include <vector>
@@ -19,7 +19,7 @@ class Node {
          size_t num_captured, double equivalent_minority);
 
     virtual ~Node();
-     
+
     inline unsigned short id() const;
     inline bool prediction() const;
     inline bool default_prediction() const;
@@ -28,7 +28,7 @@ class Node {
     inline bool done() const;
     inline void set_done();
     inline bool deleted() const;
-    inline void set_deleted(); 
+    inline void set_deleted();
 
     // Returns pair of prefixes and predictions for the path from this node to the root
     inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> >
@@ -50,7 +50,11 @@ class Node {
     }
 
   protected:
+#if defined(TRACK_ALLOC)
     std::map<unsigned short, Node*, std::less<unsigned short>, track_alloc<std::pair<const unsigned short, Node*>, DataStruct::Tree> > children_;
+#else
+    std::map<unsigned short, Node* > children_;
+#endif
     Node* parent_;
     double lower_bound_;
     double objective_;
@@ -142,8 +146,11 @@ class CacheTree {
 
     double min_objective_;
     tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist_;
+#if defined(TRACK_ALLOC)
     std::vector<bool, track_alloc<bool, DataStruct::Tree> > opt_predictions_;
-
+#else
+    std::vector<bool> opt_predictions_;
+#endif
     rule_t *rules_;
     rule_t *labels_;
     rule_t *minority_;

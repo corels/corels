@@ -1,7 +1,14 @@
-#include "queue.hh"
+#include "queue.h"
 #include <algorithm>
 #include <iostream>
 #include <stdio.h>
+
+#if defined(R_BUILD)
+ #define STRICT_R_HEADERS
+ #include "R.h"
+ // textual substitution
+ #define printf Rprintf
+#endif
 
 Queue::Queue(std::function<bool(Node*, Node*)> cmp, char const *type)
     : q_(new q (cmp)), type_(type) {}
@@ -51,7 +58,7 @@ void evaluate_children(CacheTree* tree, Node* parent, tracking_vector<unsigned s
         // captured represents data captured by the new rule
         rule_vand(captured, parent_not_captured, tree->rule(i).truthtable, nsamples, &num_captured);
         // lower bound on antecedent support
-        if ((tree->ablation() != 1) && (num_captured < threshold)) 
+        if ((tree->ablation() != 1) && (num_captured < threshold))
             continue;
         rule_vand(captured_zeros, captured, tree->label(0).truthtable, nsamples, &c0);
         c1 = num_captured - c0;
@@ -170,7 +177,7 @@ void bbound_begin(CacheTree* tree, Queue* q) {
     logger->setInitialTime(start);
     logger->initializeState(tree->calculate_size());
     // initial log record
-    logger->dumpState();         
+    logger->dumpState();
 
     min_objective = 1.0;
     tree->insert_root();
@@ -228,7 +235,7 @@ void bbound_loop(CacheTree* tree, Queue* q, PermutationMap* p) {
         logger->dumpState();
     }
 }
-    
+
 int bbound_end(CacheTree* tree, Queue* q, PermutationMap* p, bool early) {
     std::set<std::string> verbosity = logger->getVerbosity();
     bool print_queue = 0;
@@ -236,10 +243,10 @@ int bbound_end(CacheTree* tree, Queue* q, PermutationMap* p, bool early) {
     if (verbosity.count("loud"))
         printf("iter: %zu, tree: %zu, queue: %zu, pmap: %zu, time elapsed: %f\n",
                num_iter, tree->num_nodes(), q->size(), p->size(), time_diff(start));
-    
+
     if (!early) {
         if (q->empty()) {
-            if (verbosity.count("progress")) 
+            if (verbosity.count("progress"))
                 printf("Exited because queue empty\n");
         }
         else if (verbosity.count("progress"))
@@ -298,7 +305,7 @@ int bbound_end(CacheTree* tree, Queue* q, PermutationMap* p, bool early) {
         if (verbosity.count("progress"))
             printf("minimum lower bound in queue: %1.10f\n\n", min_lower_bound);
     }
-    
+
     if (print_queue)
         f.close();
     // last log record (before cache deleted)
@@ -308,6 +315,6 @@ int bbound_end(CacheTree* tree, Queue* q, PermutationMap* p, bool early) {
         rule_vfree(&captured);
         rule_vfree(&not_captured);
     }
-    
+
     return num_iter;
 }

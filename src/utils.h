@@ -13,7 +13,7 @@
 #include <sys/time.h>
 #endif
 
-#include "rule.hh"
+#include "rule.h"
 
 using namespace std;
 
@@ -372,12 +372,12 @@ class Logger : public NullLogger {
         if (K > _nrules)
             K = _nrules;
 
-         // sum_{j=0}^M Q_j sum_{k=1}^{K-j} (M - j)! / (M - j - k)!
+        // sum_{j=0}^M Q_j sum_{k=1}^{K-j} (M - j)! / (M - j - k)!
         mpz_set_ui(tot, _nrules - len_prefix);
         for(size_t k = (_nrules - len_prefix - 1); k >= (_nrules - len_prefix - K + 1); --k)
             mpz_addmul_ui(tot, tot, k);
 
-         // multiply by Qj
+        // multiply by Qj
         mpz_mul_ui(tot, tot, _state.prefix_lens[len_prefix]);
     }
     inline void addQueueElement(unsigned int len_prefix, double lower_bound, bool approx) override {
@@ -444,7 +444,8 @@ inline double time_diff(double t0) {
 #define _snprintf snprintf
 #endif
 
-#include "alloc.hh"
+#include "alloc.h"
+
 /*
  * Prints the final rulelist that CORELS returns.
  * rulelist -- rule ids of optimal rulelist

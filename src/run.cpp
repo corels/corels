@@ -3,8 +3,15 @@
 #include <set>
 #include <string.h>
 
-#include "queue.hh"
-#include "run.hh"
+#include "queue.h"
+#include "run.h"
+
+#if defined(R_BUILD)
+ #define STRICT_R_HEADERS
+ #include "R.h"
+ // textual substitution
+ #define printf Rprintf
+#endif
 
 #define BUFSZ 512
 
@@ -25,7 +32,11 @@ int run_corels_begin(double c, char* vstring, int curiosity_policy,
     char *vcopy_begin = vcopy;
     while ((vopt = strtok(vcopy, ",")) != NULL) {
         if (!strstr(voptions, vopt)) {
+            #if !defined(R_BUILD)
             fprintf(stderr, "verbosity options must be one or more of (%s)\n", voptions);
+            #else
+            REprintf("verbosity options must be one or more of (%s)\n", voptions);
+            #endif
             return -1;
         }
         verbosity.insert(vopt);
@@ -158,7 +169,7 @@ double run_corels_end(std::vector<int>* rulelist, std::vector<int>* classes, int
     }
 
     // Exiting early skips cleanup
-    if(!early) {    
+    if(!early) {
         if (tree)
             delete tree;
         if (queue)

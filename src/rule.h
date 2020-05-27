@@ -97,7 +97,7 @@ typedef struct ruleset {
 	int n_rules;			/* Number of actual rules. */
 	int n_alloc;			/* Spaces allocated for rules. */
 	int n_samples;
-	ruleset_entry_t* rules;	/* Array of rules. */
+	ruleset_entry_t *rules;		/* Array of rules. */
 } ruleset_t;
 
 typedef struct params {

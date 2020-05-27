@@ -1,13 +1,13 @@
 #pragma once
 
-#include "pmap.hh"
-#include "alloc.hh"
+#include "pmap.h"
+#include "alloc.h"
 #include <functional>
 #include <queue>
 #include <set>
 
 // pass custom allocator function to track memory allocations in the queue
-typedef std::priority_queue<Node*, tracking_vector<Node*, DataStruct::Queue>, 
+typedef std::priority_queue<Node*, tracking_vector<Node*, DataStruct::Queue>,
         std::function<bool(Node*, Node*)> > q;
 
 // orders based on depth (BFS)
@@ -85,7 +85,7 @@ class Queue {
                 } else {
                     valid = true;
                 }
-            } while (!q_->empty() && !valid); 
+            } while (!q_->empty() && !valid);
             if (!valid) {
                 return std::make_pair((Node*)NULL, prefix);
             }
