@@ -1,4 +1,4 @@
-CFLAGS := -g -W -Wall -Wno-unused-parameter -I. -O2 -fno-omit-frame-pointer
+CFLAGS := -g -W -Wall -Wno-unused-parameter -I. -O2 -fno-omit-frame-pointer -fPIC
 LIBS := 
 ifndef NGMP
     CFLAGS += -I/usr/local/include -DGMP
@@ -17,13 +17,16 @@ DEPSDIR := .deps
 
 CLEAN := corels *~ *.o *.so
 
-all: corels tests
+all: corels tests libcorels.so
 
 tests: tests.o utils.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
 
 corels: run.o main.o corels.o pmap.o cache.o rulelib.o utils.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
+
+libcorels.so: run.o corels.o pmap.o cache.o rulelib.o utils.o
+	$(CXX) -shared -o $@ $^ $(LDFLAGS) $(LIBS)
 
 tests.o: tests.cc $(DEPSDIR)/stamp
 	$(CXX) $(CXXFLAGS) $(DEPCFLAGS) -c $< -o $@

@@ -166,25 +166,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if(nsamples_label != nsamples) {
-        fprintf(stderr, "nsamples mismatch between out file (%d) and label file (%d)\n", nsamples, nsamples_label);
-        rules_free(rules, nrules, 1);
-        rules_free(labels, nlabels, 0);
-        return 1;
-    }
-
     int nmeta, nsamples_meta;
     // Equivalent points information is precomputed, read in from file, and stored in meta
     rule_t *meta;
     if (argc == 3) {
         if(rules_init(argv[2], &nmeta, &nsamples_meta, &meta, 0) != 0) {
             fprintf(stderr, "Failed to load minor file from path: %s, skipping...\n", argv[2]);
-            meta = NULL;
-            nmeta = 0;
-        }
-        else if(nsamples_meta != nsamples) {
-            fprintf(stderr, "nsamples mismatch between out file (%d) and minor file (%d), skipping minor file...\n", nsamples, nsamples_meta);
-            rules_free(meta, nmeta, 0);
             meta = NULL;
             nmeta = 0;
         }
@@ -218,7 +205,7 @@ int main(int argc, char *argv[]) {
     std::set<std::string> run_verbosity;
 
     if(run_corels_begin(c, &verbstr[0], curiosity_policy, map_type, ablation, calculate_size,
-                        nrules, nlabels, nsamples, rules, labels, meta, freq, &log_fname[0],
+                        nrules, nlabels, nsamples_label, rules, labels, meta, freq, &log_fname[0],
                         pmap, tree, queue, init, run_verbosity) == 0)
     {
         while(run_corels_loop(max_num_nodes, pmap, tree, queue) == 0) { }

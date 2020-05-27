@@ -118,6 +118,9 @@ class PrefixPermutationMap : public PermutationMap {
             int num_not_captured, int nsamples, int len_prefix, double c, double equivalent_minority,
             CacheTree* tree, VECTOR not_captured, tracking_vector<unsigned short,
             DataStruct::Tree> parent_prefix) override;
+        inline PrefixMap* getMap() const {
+            return pmap;
+        }
 	private:
 		PrefixMap* pmap;
 };
@@ -133,6 +136,9 @@ class CapturedPermutationMap : public PermutationMap {
                 double lower_bound, double objective, Node* parent, int num_not_captured, int nsamples,
                 int len_prefix, double c, double equivalent_minority, CacheTree* tree, VECTOR not_captured,
                  tracking_vector<unsigned short, DataStruct::Tree> parent_prefix) override;
+        inline CapturedMap* getMap() const {
+            return pmap;
+        }
 	private:
 		CapturedMap* pmap;
 };
