@@ -1,9 +1,0 @@
-
-## Compile as C++11
-CXX_STD = CXX11
-
-## You can also enable allocation tracking by adding -DTRACK_ALLOC here
-PKG_CXXFLAGS = -I. ../../src
-
-## Default libraries
-PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
