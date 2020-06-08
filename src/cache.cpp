@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 Node::Node(size_t nrules, bool default_prediction, double objective, double equivalent_minority)
-    : lower_bound_(equivalent_minority), objective_(objective), equivalent_minority_(equivalent_minority), depth_(0),
+    : parent_(NULL), lower_bound_(equivalent_minority), objective_(objective), equivalent_minority_(equivalent_minority), depth_(0),
       num_captured_(0), id_(0), default_prediction_(default_prediction),
       done_(0), deleted_(0) {
           (void) nrules;

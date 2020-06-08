@@ -64,3 +64,5 @@ __pycache__/
 MANIFEST
 .eggs/
 python/env/
+
+tests/tests
