@@ -8,5 +8,5 @@ endif
 
 LIBS := -L/usr/local/lib -lgmp -lgmpxx -L../src/ -lcorels -Wl,-R../src/
 
-tests: tests.cc tests-main.cc
+tests: tests.cpp tests-main.cpp
 	$(CXX) $(CFLAGS) $^ -o $@ $(LIBS)
