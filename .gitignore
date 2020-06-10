@@ -16,7 +16,6 @@ data/*.minor
 # GNUmakefile deps
 src/.deps/*
 src/corels
-src/tests
 
 # OS Generated files
 .DS_Store*
@@ -28,24 +27,7 @@ src/tags
 logs/*
 !logs/README.txt
 
-R/inst/lib
-R/.Rproj.user
-R/src/*.dll
-R/src/symbols.rds
-.Rhistory
-.RData
-.DS_Store
-
-## QtCreator
-R/Rcpp.pro
-R/Rcpp.pro.user
-R/*.autosave
-R/.#*
-
-*.tar.gz
 *~
-
-R/vignettes/*_cache
 
 ## GNU global
 GPATH
