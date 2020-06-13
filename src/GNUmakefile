@@ -15,7 +15,7 @@ CXX := g++ -std=c++11
 
 DEPSDIR := .deps
 
-CLEAN := corels *~ *.o *.so
+CLEAN := corels *~ *.o *.so tests
 
 all: corels tests
 
