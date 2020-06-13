@@ -3,14 +3,12 @@ language: cpp
 sudo: false
 dist: bionic
 
-env:
-  matrix:
-    #
-    - INFO="with alloc track"
-      TRACKALLOC=1
-    #
-    - INFO="without alloc track"
-      TRACKALLOC=
+jobs:
+  include:
+    - name: "with alloc track"
+      env: TRACKALLOC=1
+    - name: "without alloc track"
+      env: TRACKALLOC
       
 install:
   - which $CXX
