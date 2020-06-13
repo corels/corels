@@ -1,6 +1,7 @@
 
 language: cpp
 sudo: false
+dist: bionic
 
 env:
   matrix:
@@ -16,6 +17,4 @@ install:
   - $CXX --version
 
 script:
-  - cd src 
-  - make
-  - ./tests
+  - cd src && make && ./tests
