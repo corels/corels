@@ -26,3 +26,25 @@ src/tags
 # Specific to bbcache
 logs/*
 !logs/README.txt
+
+*~
+
+## GNU global
+GPATH
+GRTAGS
+GTAGS
+
+##
+R/local/
+
+*.pyc
+python/build/
+python/dist/
+corels.egg-info/
+__pycache__/
+*.pyd
+MANIFEST
+.eggs/
+python/env/
+
+tests/tests
