@@ -8,5 +8,8 @@ endif
 
 LIBS := -L/usr/local/lib -lgmp -lgmpxx -L../src/ -lcorels -Wl,-R../src/
 
-tests: tests.cpp tests-main.cpp
+tests: test_cases/* tests-main.cpp
 	$(CXX) $(CFLAGS) $^ -o $@ $(LIBS)
+
+clean: 
+	rm tests

@@ -9,6 +9,7 @@ the system, enter './tests [name]' where name is one of the following:
     -   capturemap      Test the captured permutation map
     -   trie            Test the rulelist trie
     -   queue           Test the priority queue
+    -   parse_verbosity Test the verbosity parsing of the main corels module
 
     -   trie_init       Test the initialization of the trie
     -   construct_node  Test the construction of a node by the trie
@@ -43,6 +44,8 @@ the system, enter './tests [name]' where name is one of the following:
     -   select          Test the priority queue's select function
 
 For example, './tests [prefixmap]' would only run the tests for the prefix permutation map.
+
+The test case code is housed in the folder 'test_cases/'.
 
 Further options controlling the behavior of Catch, the testing framework used for these tests, can be
 passed after the tags specifying one part of the suite to run. To view these options, run './tests --help'
