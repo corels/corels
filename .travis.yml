@@ -12,10 +12,8 @@ env:
       TRACKALLOC=
       
 install:
-  - which $CXX
   - $CXX --version
 
 script:
-  - cd src 
-  - make
-  - ./tests
+  - cd src && make && cd -
+  - cd tests && make && ./tests
