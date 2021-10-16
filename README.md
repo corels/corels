@@ -30,7 +30,7 @@ CORELS is a custom branch-and-bound algorithm for optimizing rule lists.
 
 **Web UI can be found at:** https://corels.eecs.harvard.edu/
 
-**R Package can be found at:** https://cran.r-project.org/web/packages/corels/index.html
+**R Package can be found at:** https://cran.r-project.org/package=corels
 
 **Python package can be found at:** https://pypi.org/project/corels/
 
